@@ -66,5 +66,21 @@ class User {
         }
         return false;
     }
+//------------------------------------methode Login ------------------------------------//
+    public function login() {
+        $query = "SELECT id, username, password, role FROM " . $this->table_name . " WHERE email = ? LIMIT 0,1";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(1, $this->email);
+        $stmt->execute();
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
+        if($row) {
+            $this->id = $row['id'];
+            $this->username = $row['username'];
+            $this->password = $row['password'];
+            $this->role = $row['role'];
+            return true;
+        }
+        return false;
+    }
 }
