@@ -43,6 +43,40 @@ class UserController {
         include 'views/register.php';
     }
 
-   
+    public function login() {
+        if ($_SERVER["REQUEST_METHOD"] == "POST") {
+            $email = filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL);
+            $password = $_POST['password'];
+
+            if (!$email || !$password) {
+                return "Email and password are obligatoire.";
+            }
+
+            $this->user->setEmail($email);
+            if ($this->user->login() && password_verify($password, $this->user->getPassword())) {
+                session_start();
+                $_SESSION['user_id'] = $this->user->getId();
+                $_SESSION['username'] = $this->user->getUsername();
+                $_SESSION['role'] = $this->user->getRole();
+
+                switch ($this->user->getRole()) {
+                    case 'admin':
+                        header("Location: admin_dashboard.php");
+                        break;
+                    case 'teacher':
+                        header("Location: teacher_dashboard.php");
+                        break;
+                    default:
+                        header("Location: student_dashboard.php");
+                        break;
+                }
+                exit();
+            } else {
+                return " Please try again.";
+            }
+        }
+        
+        include 'views/login.php';
+    }
 }
 
