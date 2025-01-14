@@ -51,5 +51,20 @@ class User {
     public function setRole($role) {
         $this->role = htmlspecialchars(strip_tags($role));
     }
- 
+   //--------------------------------Methode Create -----------------------------------//
+    public function create() {
+        $query = "INSERT INTO " . $this->table_name . " SET username=:username, email=:email, password=:password, role=:role";
+        $stmt = $this->conn->prepare($query);
+
+        $stmt->bindParam(":username", $this->username);
+        $stmt->bindParam(":email", $this->email);
+        $stmt->bindParam(":password", $this->password);
+        $stmt->bindParam(":role", $this->role);
+
+        if($stmt->execute()) {
+            return true;
+        }
+        return false;
+    }
+
 }
