@@ -114,3 +114,40 @@ INSERT INTO cours_tags (course_id, tag_id) VALUES
 INSERT INTO inscriptions (student_id, course_id) VALUES
 (1, 1),
 (1, 2);
+
+
+-- Statistique
+--Nombre total de cours:
+"SELECT COUNT(*) as total FROM cours"
+--répartition par catégorie
+"SELECT c.name as category, COUNT(co.id) as count
+                  FROM categories c
+                  LEFT JOIN cours co ON c.id = co.category_id
+                  GROUP BY c.id
+                  ORDER BY count DESC"
+--Le cour avec le plus d' étudiants
+"SELECT c.title, COUNT(i.id) as student_count
+                  FROM cours c
+                  LEFT JOIN inscriptions i ON c.id = i.course_id
+                  GROUP BY c.id
+                  ORDER BY student_count DESC
+                  LIMIT 1";
+--Les Top 3 enseignants:
+"SELECT u.username, COUNT(DISTINCT c.id) as course_count, COUNT(i.id) as student_count
+                  FROM utilisateurs u
+                  LEFT JOIN cours c ON u.id = c.teacher_id
+                  LEFT JOIN inscriptions i ON c.id = i.course_id
+                  WHERE u.role = 'teacher'
+                  GROUP BY u.id
+                  ORDER BY student_count DESC
+                  LIMIT 3"
+
+-- Nombre d’étudiants inscrits
+"SELECT COUNT(DISTINCT student_id) as total FROM inscriptions"
+-- Nombre de cours:
+"SELECT AVG(course_count) as average
+                  FROM (
+                      SELECT student_id, COUNT(DISTINCT course_id) as course_count
+                      FROM inscriptions
+                      GROUP BY student_id
+                  ) as student_courses";
