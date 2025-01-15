@@ -20,6 +20,9 @@ switch($action) {
     case 'login':
         $userController->login();
         break;
+    case 'courses':
+        $courseController->index();
+        break;
     default:
         echo "Welcome to Youdemy!";
         break;
