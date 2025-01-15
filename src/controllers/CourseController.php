@@ -6,7 +6,9 @@ class CourseController {
         $this->courseModel = new Course($db);
     }
 
-   
+    public function listCourses() {
+        return $this->courseModel->getAll();
+    }
 
 
    
