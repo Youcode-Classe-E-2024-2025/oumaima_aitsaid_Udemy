@@ -23,9 +23,26 @@
             <h2 class="text-2xl font-semibold text-gray-800 mb-5">Course Catalog</h2>
 
             <!-- ------------------------------------Search ------------------------------------------------------ -->
-          
+            <form method="get" action="?action=courses" class="mb-5">
+                <input type="text" name="search" placeholder="Search courses..." value="<?= isset($_GET['search']) ? htmlspecialchars($_GET['search']) : '' ?>" class="border p-2 rounded-md">
+                <button type="submit" class="bg-red-600 text-white px-4 py-2 rounded-md">Search</button>
+            </form>
 
-            
+            <div class="grid grid-cols-3 gap-8">
+                <?php if (!empty($courses)): ?>
+                    <?php foreach ($courses as $course): ?>
+                    <div class="bg-gray-50 p-5 rounded-lg shadow">
+                        <h3 class="font-semibold text-lg text-red-600"><?= htmlspecialchars($course['title']) ?></h3>
+                        <p class="text-gray-700"><?= htmlspecialchars($course['description']) ?></p>
+                        <p class="text-gray-600">Category: <?= htmlspecialchars($course['category']) ?></p>
+                        <p class="text-gray-600">Teacher: <?= htmlspecialchars($course['teacher_name']) ?></p>
+                        <button class="bg-yellow-500 text-white px-5 py-2 rounded-md mt-4">Enroll Now</button>
+                    </div>
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <p>No courses available.</p>
+                <?php endif; ?>
+            </div>
 
             <!--------------------------------------------- Pagination ------------------------------------------------------->
             
