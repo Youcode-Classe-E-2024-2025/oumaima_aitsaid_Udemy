@@ -26,5 +26,12 @@ class Course {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-   
+    public function countCourses() {
+        $query = "SELECT COUNT(*) as total FROM " . $this->table;
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $result['total'];
+    }
+
 }
