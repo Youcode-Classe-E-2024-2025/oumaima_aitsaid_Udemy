@@ -61,13 +61,13 @@ class UserController {
 
                 switch ($this->user->getRole()) {
                     case 'admin':
-                        header("Location: admin_dashboard.php");
+                        header("Location: Views/admin_dashboard.php");
                         break;
                     case 'teacher':
-                        header("Location: teacher_dashboard.php");
+                        header("Location: Views/teacher_dashboard.php");
                         break;
                     default:
-                        header("Location: student_dashboard.php");
+                        header("Location:Views/student_dashboard.php");
                         break;
                 }
                 exit();
