@@ -12,6 +12,17 @@ class Course {
     public function __construct($db) {
         $this->conn = $db;
     }
+
+    public function create() {
+        $query = "INSERT INTO " . $this->table . " (title, description, teacher_id, category_id) 
+                  VALUES (:title, :description, :teacher_id, :category_id)";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':title', $this->title);
+        $stmt->bindParam(':description', $this->description);
+        $stmt->bindParam(':teacher_id', $this->teacher_id);
+        $stmt->bindParam(':category_id', $this->category_id);
+        return $stmt->execute();
+    }
     public function getCourses($limit, $offset) {
         $query = "SELECT c.id, c.title, c.description, c.created_at, u.username AS teacher_name, cat.name AS category
                   FROM cours c
