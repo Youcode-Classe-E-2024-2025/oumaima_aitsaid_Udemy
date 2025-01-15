@@ -45,7 +45,19 @@
             </div>
 
             <!--------------------------------------------- Pagination ------------------------------------------------------->
-            
+            <div class="mt-5 flex justify-center space-x-4">
+                <?php if ($currentPage > 1): ?>
+                    <a href="?action=courses&page=1<?= isset($_GET['search']) ? '&search=' . urlencode($_GET['search']) : '' ?>" class="text-red-600 hover:text-red-800">First</a>
+                    <a href="?action=courses&page=<?= $currentPage - 1 ?><?= isset($_GET['search']) ? '&search=' . urlencode($_GET['search']) : '' ?>" class="text-red-600 hover:text-red-800">Previous</a>
+                <?php endif; ?>
+                
+                <span class="text-gray-800">Page <?= $currentPage ?> of <?= $totalPages ?></span>
+
+                <?php if ($currentPage < $totalPages): ?>
+                    <a href="?action=courses&page=<?= $currentPage + 1 ?><?= isset($_GET['search']) ? '&search=' . urlencode($_GET['search']) : '' ?>" class="text-red-600 hover:text-red-800">Next</a>
+                    <a href="?action=courses&page=<?= $totalPages ?><?= isset($_GET['search']) ? '&search=' . urlencode($_GET['search']) : '' ?>" class="text-red-600 hover:text-red-800">Last</a>
+                <?php endif; ?>
+            </div>
         </section>
 
         <?php include 'footer.php'?>
