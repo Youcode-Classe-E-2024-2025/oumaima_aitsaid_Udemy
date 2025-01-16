@@ -11,5 +11,12 @@
         $stmt = $this->conn->query($query);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+    //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<createCategories>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>//
+    public function create($name) {
+     $query = "INSERT INTO " . $this->table . " (name) VALUES (:name)";
+     $stmt = $this->conn->prepare($query);
+     $stmt->bindParam(':name', $name);
+     return $stmt->execute();
+    }
 }
    

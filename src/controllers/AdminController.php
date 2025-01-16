@@ -33,7 +33,7 @@ class AdminController {
     }
     //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<manageUser>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>//
 
-         public function manageUsers() {
+    public function manageUsers() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $action = $_POST['action'];
             $user_id = $_POST['user_id'];
@@ -48,7 +48,7 @@ class AdminController {
                 case 'delete':
                     $this->admin->deleteUser($user_id);
                     header("Location: index.php?action=manage_users&message=deleted");
-         exit();
+    exit();
                     break;
             }
     
@@ -64,4 +64,25 @@ class AdminController {
         include __DIR__ . '/../../views/admin_manage_users.php';
     }
     
+     //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<updateUserStatus>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>//
+
+    public function updateUserStatus() {
+        if ($_SERVER["REQUEST_METHOD"] === "POST") {
+            $user_id = filter_input(INPUT_POST, 'user_id', FILTER_SANITIZE_NUMBER_INT);
+            $status = filter_input(INPUT_POST, 'status', FILTER_SANITIZE_STRING);
+
+            $query = "UPDATE utilisateurs SET is_active = :status WHERE id = :user_id";
+            $stmt = $this->admin->getConnection()->prepare($query);
+            $stmt->bindValue(':status', $status === 'activate' ? 1 : 0, PDO::PARAM_INT);
+            $stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
+
+            if ($stmt->execute()) {
+                header("Location: index.php?action=manage_users&message=updated");
+                exit();
+            } else {
+                header("Location: index.php?action=manage_users&message=error");
+                exit();
+            }
+        }
+    }
 }
