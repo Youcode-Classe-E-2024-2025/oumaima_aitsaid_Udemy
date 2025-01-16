@@ -78,6 +78,17 @@ switch($action) {
                      echo "Error: u need category ID.";
                  } 
             break;
+        case 'Tags':
+            $tagsController->index();
+            break;     
+        case 'create_tag':
+            $tagsController->createTag();
+        case 'update_tag':
+            $tagsController->updateTag($_GET['id']);
+            break;
+        case 'delete_tag':
+            $tagsController->deleteTag($_GET['id']);
+            break;
  default:
         echo "Welcome to my platforme !";
         break;
