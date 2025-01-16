@@ -55,6 +55,29 @@ switch($action) {
         case 'courses1':
             $courseController->listCourses();
             break;
+        case 'categories':
+            $categoryController->index();
+            break;
+        case 'create_category':
+            $categoryController->createCategory();
+            break;
+        case 'edit_category':
+            if (isset($_GET['id'])) {
+            $categoryController->updateCategory((int)$_GET['id']);
+             } else {
+                 echo "Error: u need category ID.";
+             }
+             break;
+        case 'delete_category':
+                 if (isset($_GET['id'])) 
+                 {
+            $categoryController->deleteCategory((int)$_GET['id']);
+                 } 
+                 else 
+                 {
+                     echo "Error: u need category ID.";
+                 } 
+            break;
  default:
         echo "Welcome to my platforme !";
         break;
