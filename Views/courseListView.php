@@ -34,7 +34,7 @@
                     <div class="bg-gray-50 p-5 rounded-lg shadow">
                         <h3 class="font-semibold text-lg text-red-600"><?= htmlspecialchars($course['title']) ?></h3>
                         <p class="text-gray-700"><?= htmlspecialchars($course['description']) ?></p>
-                        <p class="text-gray-600">Category: <?= htmlspecialchars($course['category']) ?></p>
+                        <p class="text-gray-600">Category: <?= htmlspecialchars($course['category'] ?? '')  ?></p>
                         <p class="text-gray-600">Teacher: <?= htmlspecialchars($course['teacher_name']) ?></p>
                         <button class="bg-yellow-500 text-white px-5 py-2 rounded-md mt-4">Enroll Now</button>
                     </div>

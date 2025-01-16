@@ -8,6 +8,7 @@ class UserController {
         $this->db = $db;
         $this->user = new User($db);
     }
+    //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<register>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>//
 
     public function register() {
         if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -42,6 +43,7 @@ class UserController {
         
         include 'views/register.php';
     }
+    //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<login>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>//
 
     public function login() {
         if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -61,7 +63,7 @@ class UserController {
 
                 switch ($this->user->getRole()) {
                     case 'admin':
-                        header("Location: Views/admin_dashboard.php");
+                        header("Location: index.php?action=admin_dashboard");
                         break;
                     case 'teacher':
                         header("Location: Views/teacher_dashboard.php");

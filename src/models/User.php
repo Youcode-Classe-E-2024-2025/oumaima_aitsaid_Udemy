@@ -7,13 +7,13 @@ class User {
     protected $email;
     protected $password;
     protected $role;
-//--------------------------magic Method Construct -------------------------------------------//
-    public function __construct($db) {
+        //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<Construct>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>//
+        public function __construct($db) {
         $this->conn = $db;
     }
 
-    //----------------------------------- Getters---------------------------------------------//
-    public function getId() {
+        //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<Getters>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>//
+        public function getId() {
         return $this->id;
     }
 
@@ -30,9 +30,11 @@ class User {
     public function getRole() {
         return $this->role;
     }
-
-    //-------------------------------- Setters---------------------------------------------------//
-    public function setId($id) {
+    public function getConnection() {
+        return $this->conn;
+    }
+        //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<setters>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>//
+        public function setId($id) {
         $this->id = $id;
     }
 
@@ -51,8 +53,8 @@ class User {
     public function setRole($role) {
         $this->role = htmlspecialchars(strip_tags($role));
     }
-   //--------------------------------Methode Create -----------------------------------//
-    public function create() {
+        //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<Create>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>//
+        public function create() {
         $query = "INSERT INTO " . $this->table_name . " SET username=:username, email=:email, password=:password, role=:role";
         $stmt = $this->conn->prepare($query);
 
@@ -66,8 +68,8 @@ class User {
         }
         return false;
     }
-//------------------------------------methode Login ------------------------------------//
-    public function login() {
+        //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<login>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>//
+        public function login() {
         $query = "SELECT id, username, password, role FROM " . $this->table_name . " WHERE email = ? LIMIT 0,1";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(1, $this->email);
@@ -82,5 +84,12 @@ class User {
             return true;
         }
         return false;
+    }
+        //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<getAllUsers>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>//
+
+    public function getAll(){
+        $query = "SELECT id, username, email, role, is_active FROM utilisateurs";
+        $stmt = $this->admin->conn->prepare($query);
+        $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 }

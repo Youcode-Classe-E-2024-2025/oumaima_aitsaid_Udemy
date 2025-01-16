@@ -7,7 +7,6 @@
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <div class="min-h-screen bg-gray-50 flex flex-col">
-  <!-- Navbar -->
   <nav class="bg-red-600 text-white p-4 flex justify-between items-center">
     <h1 class="text-xl font-semibold">Teacher Dashboard</h1>
     <div>
@@ -17,14 +16,10 @@
       <a href="#" class="text-white hover:text-gray-200 mx-3">Profile</a>
     </div>
   </nav>
-
-  <!-- Hero Section -->
   <section class="bg-red-600 text-white p-10 text-center">
     <h2 class="text-3xl font-bold">Welcome, Teacher!</h2>
     <p class="text-lg mt-2">Manage your courses, track student progress, and view your statistics.</p>
   </section>
-
-  <!-- My Courses -->
   <section class="p-10">
     <h2 class="text-2xl font-semibold text-gray-800 mb-5">Your Courses</h2>
     <div class="grid grid-cols-3 gap-8">
@@ -42,8 +37,6 @@
       </div>
     </div>
   </section>
-
-  <!-- Statistics -->
   <section class="p-10">
     <h2 class="text-2xl font-semibold text-gray-800 mb-5">Your Statistics</h2>
     <div class="grid grid-cols-2 gap-8">
@@ -58,8 +51,5 @@
     </div>
   </section>
 
-  <!-- Footer -->
-  <footer class="bg-gray-800 text-white p-5 text-center">
-    <p>&copy; 2025 Youdemy. All rights reserved.</p>
-  </footer>
+<?php include 'footer.php'?>
 </div>

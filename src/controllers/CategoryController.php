@@ -1,19 +1,15 @@
 <?php
-// src/controllers/CategoryController.php
 
-class CategoryController {
+class categoryController {
     private $categoryModel;
 
     public function __construct($db) {
         $this->categoryModel = new Category($db);
     }
+    //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<indexCategory>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>//
 
-    public function listCategories() {
-        return $this->categoryModel->getAll();
-    }
-
-    public function addCategory($name) {
-        $this->categoryModel->name = $name;
-        return $this->categoryModel->create();
+    public function index() {
+        $categories = $this->categoryModel->getAll();
+        include 'views/category_list.php';
     }
 }
