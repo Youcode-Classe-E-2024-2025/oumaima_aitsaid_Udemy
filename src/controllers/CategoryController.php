@@ -45,4 +45,11 @@ class categoryController {
         $categories = $this->categoryModel->getAll(); 
         include 'views/category_list.php';
     }
+     //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<deleteCategory>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>//
+
+    public function deleteCategory($id) {
+        $this->categoryModel->delete($id);
+        header("Location: index.php?action=categories&message=deleted");
+        exit();
+    }
 }
