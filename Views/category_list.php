@@ -4,10 +4,7 @@
 
 ?>
 
-
-    <!-- Main Content -->
     <div class="flex-1 overflow-x-hidden overflow-y-auto">
-        <!-- Top Navbar -->
         <header class="bg-white shadow-md p-4">
             <div class="flex justify-between items-center">
                 <button onclick="history.back()" class="bg-gray-200 text-gray-700 px-4 py-2 rounded hover:bg-gray-300">Back</button>
@@ -17,8 +14,6 @@
                 </div>
             </div>
         </header>
-
-        <!-- Categories Content -->
         <main class="p-6">
             <h1 class="text-2xl font-bold mb-6">Categories</h1>
             <div class="mb-4">
@@ -33,18 +28,18 @@
                 <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4" role="alert">
                     <span class="block sm:inline">
                         <?php
-                        switch ($_GET['message']) {
-                            case 'created':
-                                echo 'Category created successfully.';
-                                break;
-                                case 'updated':
-                                    echo 'Category updated successfully.';
-                                    break;
-                                    case 'deleted':
-                                        echo 'Category deleted successfully.';
-                                        break;
-                                    }
-                                    ?>
+                switch ($_GET['message']) {
+                    case 'created':
+                        echo 'Category created successfully.';
+                    break;
+                    case 'updated':
+                        echo 'Category updated successfully.';
+                    break;
+                    case 'deleted':
+                        echo 'Category deleted successfully.';
+                    break;
+                         }
+                         ?>
                     </span>
                 </div>
             <?php endif; ?>
@@ -79,7 +74,6 @@
     </div>
 </div>
 
-<!-- Modal -->
 <div id="categoryModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden">
     <div class="bg-white p-6 rounded shadow-lg w-96">
         <h2 id="modalTitle" class="text-xl font-bold mb-4"></h2>
@@ -97,17 +91,17 @@
 </div>
 
 </body>
-                                    <script>
-                                        function openModal(action, category = {}) {
-                                            const modal = document.getElementById('categoryModal');
-                                            modal.classList.remove('hidden');
-                                            document.getElementById('modalTitle').textContent = action === 'create' ? 'Create Category' : 'Edit Category';
-                                            document.getElementById('categoryForm').action = action === 'create' ? 'index.php?action=create_category' : `index.php?action=edit_category&id=${category.id}`;
-                                            document.getElementById('categoryName').value = category.name || '';
-                                        }
-                                
-                                        function closeModal() {
-                                            document.getElementById('categoryModal').classList.add('hidden');
-                                        }
-                                    </script>
+ <script>
+     function openModal(action, category = {}) {
+         const modal = document.getElementById('categoryModal');
+         modal.classList.remove('hidden');
+         document.getElementById('modalTitle').textContent = action === 'create' ? 'Create Category' : 'Edit Category';
+         document.getElementById('categoryForm').action = action === 'create' ? 'index.php?action=create_category' : `index.php?action=edit_category&id=${category.id}`;
+         document.getElementById('categoryName').value = category.name || '';
+     }
+
+     function closeModal() {
+         document.getElementById('categoryModal').classList.add('hidden');
+     }
+ </script>
 </html>
