@@ -31,6 +31,37 @@ class AdminController {
             }
         }
     }
+    //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<manageUser>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>//
 
+         public function manageUsers() {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $action = $_POST['action'];
+            $user_id = $_POST['user_id'];
+    
+            switch ($action) {
+                case 'validate':
+                    $this->admin->validateTeacher($user_id);
+                    break;
+                case 'suspend':
+                    $this->admin->toggleUserStatus($user_id);
+                    break;
+                case 'delete':
+                    $this->admin->deleteUser($user_id);
+                    header("Location: index.php?action=manage_users&message=deleted");
+         exit();
+                    break;
+            }
+    
+            header("Location: index.php?action=manage_users");
+            exit();
+        }
+    
+        $conn = $this->admin->getConnection();
+        $stmt = $conn->prepare("SELECT * FROM utilisateurs");
+        $stmt->execute();
+        $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    
+        include __DIR__ . '/../../views/admin_manage_users.php';
+    }
     
 }
