@@ -26,5 +26,13 @@
         $stmt->execute();
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
+    //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<updateCategories>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>//
+    public function update($id, $name) {
+        $query = "UPDATE " . $this->table . " SET name = :name WHERE id = :id";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':name', $name);
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        return $stmt->execute();
+    }
 }
    
