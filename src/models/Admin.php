@@ -58,5 +58,27 @@ class Admin extends User {
         $stmt->bindParam(':user_id', $user_id);
         return $stmt->execute();
     }
+    //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<getStatistics>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>//   
+    public function getStatistics() {
+        $stats = [];
+
+        //<<<<<<<<<<TotaleUser>>>>>>>>>>>>>//
+        $query = "SELECT COUNT(*) as total_users FROM utilisateurs";
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute();
+        $stats['total_users'] = $stmt->fetch(PDO::FETCH_ASSOC)['total_users'];
+
+        //<<<<<<<<<<TotaleCourse>>>>>>>>>>>>>//
+        $query = "SELECT COUNT(*) as total_courses FROM cours";
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute();
+        $stats['total_courses'] = $stmt->fetch(PDO::FETCH_ASSOC)['total_courses'];
+
+      
    
+
+        
+
+        return $stats;
+    }
 }
