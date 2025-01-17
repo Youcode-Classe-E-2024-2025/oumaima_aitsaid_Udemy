@@ -54,7 +54,14 @@ class TagsController {
         }
         include 'Views/list_tags.php'; 
     }
+    //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<deleteTags>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>//
 
+    public function deleteTag($id) {
+        $this->tagsModel->delete($id);
+        header("Location: index.php?action=Tags&message=deleted");
+        exit();
+    }
+    
 
 
 }
