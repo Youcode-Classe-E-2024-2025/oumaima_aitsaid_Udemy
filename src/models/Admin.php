@@ -13,7 +13,19 @@ class Admin extends User {
         $stmt->bindParam(':teacher_id', $teacher_id);
         return $stmt->execute();
     }
- 
+    //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<ManageUser>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>//
+
+    public function manageUser($user_id, $action) {
+        $query = match ($action) {
+            'activate' => "UPDATE utilisateurs SET is_active = 1 WHERE id = :user_id",
+            'suspend' => "UPDATE utilisateurs SET is_active = 0 WHERE id = :user_id",
+            'delete' => "DELETE FROM utilisateurs WHERE id = :user_id",
+            default => throw new Exception("Invalid action")
+        };
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':user_id', $user_id);
+        return $stmt->execute();
+    }
 
 
 
