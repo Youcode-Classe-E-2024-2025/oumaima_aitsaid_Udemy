@@ -34,7 +34,14 @@ class Admin extends User {
         $stmt->bindParam(':course_id', $course_id);
         return $stmt->execute();
     }
+    //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<suspendUser>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>//
 
+    public function suspendUser($user_id) {
+        $query = "UPDATE utilisateurs SET is_active = 0 WHERE id = :user_id";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':user_id', $user_id);
+        return $stmt->execute();
+    }
 
 
    
