@@ -74,7 +74,15 @@ class Admin extends User {
         $stmt->execute();
         $stats['total_courses'] = $stmt->fetch(PDO::FETCH_ASSOC)['total_courses'];
 
-      
+        //<<<<<<<<<<TcourseByCategories>>>>>>>>>>>>>//
+        $query = "SELECT c.name, COUNT(co.id) as count 
+                  FROM categories c 
+                  LEFT JOIN cours co ON c.id = co.category_id 
+                  GROUP BY c.id";
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute();
+        $stats['courses_by_category'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
    
 
         
