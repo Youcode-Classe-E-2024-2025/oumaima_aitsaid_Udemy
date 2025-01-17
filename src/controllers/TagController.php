@@ -7,7 +7,13 @@ class TagsController {
     }
 
 
+    //newwwwwwww//
+    //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<indexTags>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>//
    
+    public function index(){
+        $tags=$this->tagsModel->getAll();
+        include 'Views/list_tags.php';
+    }
 
   
 
