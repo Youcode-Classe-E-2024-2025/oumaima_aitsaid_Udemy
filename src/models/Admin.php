@@ -50,6 +50,13 @@ class Admin extends User {
         $stmt->bindParam(':user_id', $user_id);
         return $stmt->execute();
     }
+    //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<toggleUserStatus>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>//
 
+    public function toggleUserStatus($user_id) {
+        $query = "UPDATE utilisateurs SET is_active = NOT is_active WHERE id = :user_id";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':user_id', $user_id);
+        return $stmt->execute();
+    }
    
 }
