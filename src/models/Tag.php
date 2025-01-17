@@ -15,6 +15,19 @@
         $stmt = $this->conn->query($query);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+    //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<createTags>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>//
+    
+    public function createTags(array $tags) {
+        try {
+            $placeholders = implode(',', array_fill(0, count($tags), '(?)')); 
+            $query = "INSERT INTO " . $this->table . " (name) VALUES $placeholders";
+            $stmt = $this->conn->prepare($query);
+            return $stmt->execute($tags); 
+        } catch (PDOException $e) {
+            echo "Error: " . $e->getMessage();
+            return false;
+        }
+    }
    
     
     
