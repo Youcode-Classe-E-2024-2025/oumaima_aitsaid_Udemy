@@ -5,9 +5,6 @@ class TagsController {
     public function __construct($db){
         $this->tagsModel =new Tag($db);
     }
-
-
-    //newwwwwwww//
     //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<indexTags>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>//
    
     public function index(){
