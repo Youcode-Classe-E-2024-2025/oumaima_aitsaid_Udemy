@@ -33,7 +33,27 @@ class TagsController {
         $tags = $this->tagsModel->getAll();
         include 'Views/list_tags.php';
     }
+    //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<updateTags>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>//
 
+    public function updateTag($id) {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $name = trim($_POST['name']); 
+            if (!empty($name)) {
+                $this->tagsModel->update($id, $name); 
+                header("Location: index.php?action=Tags&message=updated");
+                exit();
+            } else {
+                $error_message = "Tag name is required.";
+            }
+        }
+    
+        $tag = $this->tagsModel->getById($id);
+        if (!$tag) {
+            header("Location: index.php?action=Tags&message=not_found");
+            exit();
+        }
+        include 'Views/list_tags.php'; 
+    }
 
 
 
