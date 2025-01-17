@@ -83,7 +83,16 @@ class Admin extends User {
         $stmt->execute();
         $stats['courses_by_category'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-   
+        //<<<<<<<<<<populaireCourse>>>>>>>>>>>>>//
+        $query = "SELECT c.title, COUNT(i.id) as student_count 
+                  FROM cours c 
+                  LEFT JOIN inscriptions i ON c.id = i.course_id 
+                  GROUP BY c.id 
+                  ORDER BY student_count DESC 
+                  LIMIT 1";
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute();
+        $stats['most_popular_course'] = $stmt->fetch(PDO::FETCH_ASSOC);
 
         
 
