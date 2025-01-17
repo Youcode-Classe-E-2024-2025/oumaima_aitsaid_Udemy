@@ -42,7 +42,14 @@ class Admin extends User {
         $stmt->bindParam(':user_id', $user_id);
         return $stmt->execute();
     }
+    //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<DeleteUser>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>//
 
+    public function deleteUser($user_id) {
+        $query = "DELETE FROM utilisateurs WHERE id = :user_id";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':user_id', $user_id);
+        return $stmt->execute();
+    }
 
    
 }
