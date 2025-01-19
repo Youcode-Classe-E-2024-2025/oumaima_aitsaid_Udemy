@@ -87,7 +87,23 @@ class TeacherController {
     }
 
 
-  
+    public function deleteCourse($id) {
+        session_start();
+        if(!isset($_SESSION['user_id']) || !$this->user->isTeacher($_SESSION['user_id'])) {
+            header("Location: login.php");
+            exit();
+        }
+
+        $teacher_id = $_SESSION['user_id'];
+
+        if ($this->course->deleteCourse($id, $teacher_id)) {
+            header("Location: index.php?action=dashboard&success=course_deleted");
+            exit();
+        } else {
+            header("Location: index.php?action=dashboard&error=delete_failed");
+            exit();
+        }
+    }
 
 
     
