@@ -107,7 +107,16 @@ class TeacherController {
 
 
     
-    
+    private function getTotalStudents($teacher_id) {
+        $query = "SELECT COUNT(DISTINCT i.student_id) AS num_students 
+                  FROM inscriptions i
+                  JOIN cours c ON i.course_id = c.id
+                  WHERE c.teacher_id = ?";
+        $stmt = $this->db->prepare($query);
+        $stmt->execute([$teacher_id]);
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $result['num_students'];
+    }
 
    
     
