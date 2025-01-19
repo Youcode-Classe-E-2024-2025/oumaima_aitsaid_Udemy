@@ -66,7 +66,7 @@ class UserController {
                         header("Location: index.php?action=admin_dashboard");
                         break;
                     case 'teacher':
-                        header("Location: Views/teacher_dashboard.php");
+                        header("Location: index.php?action=dashboard");
                         break;
                     default:
                         header("Location:Views/student_dashboard.php");

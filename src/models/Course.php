@@ -12,16 +12,27 @@ class Course {
     public function __construct($db) {
         $this->conn = $db;
     }
-    //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<createCourse>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>//
-    public function create($title, $description, $category_id) {
-        $query = "INSERT INTO " . $this->table . " (title, description, category_id) VALUES (:title, :description, :category_id)";
-        $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(':title', $title);
-        $stmt->bindParam(':description', $description);
-        $stmt->bindParam(':category_id', $category_id);
-        $stmt->execute();
-    }
+    //<<<<<<<<<<<<<<<<<<<updetteee<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<createCourse>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>//
 
+    public function createCourse($data) {
+        $query = "INSERT INTO cours (title, description, teacher_id, category_id) VALUES (?, ?, ?, ?)";
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute([$data['title'], $data['description'], $data['teacher_id'], $data['category_id']]);
+
+        $course_id = $this->conn->lastInsertId();
+
+        if (!empty($data['tags'])) {
+            $this->addCourseTags($course_id, $data['tags']);
+        }
+
+        if (!empty($data['resources'])) {
+            foreach ($data['resources'] as $resource) {
+                $resource->save($this->conn, $course_id);
+            }
+        }
+
+        return $course_id;
+    }
     //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<deleteCourse>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>//
 
     public function delete($id) {
@@ -79,35 +90,10 @@ class Course {
         }
     }
     
-    //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<getlastIdCourses>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>//
-
-    public function getLastInsertId() {
-        return $this->conn->lastInsertId();
-    }
-    //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<getAllCourses avec pagination>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>//
+    
 
 
-    public function getCourses($limit, $offset) {
-        $query = "SELECT c.id, c.title, c.description, c.created_at, u.username AS teacher_name, cat.name AS category
-                  FROM cours c
-                  LEFT JOIN utilisateurs u ON c.teacher_id = u.id
-                  LEFT JOIN categories cat ON c.category_id = cat.id
-                  ORDER BY c.created_at DESC
-                  LIMIT :limit OFFSET :offset";
-        $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
-        $stmt->bindParam(':offset', $offset, PDO::PARAM_INT);
-        $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
-    //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<Nombres de courses>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>//
-
-    public function countCourses() {
-        $query = "SELECT COUNT(*) as total FROM " . $this->table;
-        $stmt = $this->conn->prepare($query);
-        $stmt->execute();
-        $result = $stmt->fetch(PDO::FETCH_ASSOC);
-        return $result['total'];
-    }
-
+    
+        
+      
 }

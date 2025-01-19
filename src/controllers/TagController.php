@@ -21,7 +21,7 @@ class TagsController {
                 $tags = array_map('trim', explode(',', $names));
                 $tags = array_filter($tags);
                 if (!empty($tags)) {
-                    $this->tagsModel->createBulk($tags); 
+                    $this->tagsModel->createTags($tags); 
                     header("Location: index.php?action=Tags&message=created");
                 }
             }
