@@ -292,6 +292,20 @@ class Course {
 
         return $course;
     }
+    //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<getCourseById>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+    public function getCourseById($course_id) {
+        $query = "SELECT c.*, cat.name as category_name, u.username as teacher_name 
+                  FROM cours c
+                  LEFT JOIN categories cat ON c.category_id = cat.id
+                  LEFT JOIN utilisateurs u ON c.teacher_id = u.id
+                  WHERE c.id = ?";
+        
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(1, $course_id);
+        $stmt->execute();
+
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
     
         
       
