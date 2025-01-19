@@ -269,6 +269,16 @@ class Course {
             ];
         }
     }
+    public function getCourseTags($courseId) {
+        $query = "SELECT tags.* FROM tags
+                  JOIN cours_tags ON cours_tags.tag_id = tags.id
+                  WHERE cours_tags.course_id = :courseId";
+
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':courseId', $courseId, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 
     
         
