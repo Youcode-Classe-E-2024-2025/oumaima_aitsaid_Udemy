@@ -155,6 +155,28 @@ class TeacherController {
     }
     
 
+    public function viewStatistics() {
+        try {
+            session_start();
+            
+            if(!isset($_SESSION['user_id']) || !$this->user->isTeacher($_SESSION['user_id'])) {
+                header("Location: login.php");
+                exit();
+            }
+
+            $teacher_id = $_SESSION['user_id'];
+            
+            $statistics = $this->course->getCourseStatistics($teacher_id);
+            $user = $this->user->getUserById($teacher_id);
+            
+            include __DIR__ . '/../../views/course_statistics.php';
+                } catch (Exception $e) {
+            error_log("Error in viewStatistics: " . $e->getMessage());
+             header("Location: index.php?action=dashboard&error=statistics_error");
+            exit();
+        }
+    }
+
     
 
     
