@@ -306,7 +306,14 @@ class Course {
 
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
-    
+    //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<ggetCourseResources>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+        public function getCourseResources($courseId) {
+            $query = "SELECT * FROM ressources_cours WHERE course_id = :courseId";
+            $stmt = $this->conn->prepare($query);
+            $stmt->bindParam(':courseId', $courseId, PDO::PARAM_INT);
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);  // Corrected to fetch all rows
+        }
         
       
 }
