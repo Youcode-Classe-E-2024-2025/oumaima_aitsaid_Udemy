@@ -134,6 +134,14 @@ class Course {
 
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+    //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<AddCourseTag>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+    private function addCourseTags($course_id, $tags) {
+        $query = "INSERT INTO cours_tags (course_id, tag_id) VALUES (?, ?)";
+        $stmt = $this->conn->prepare($query);
+        foreach ($tags as $tag_id) {
+            $stmt->execute([$course_id, $tag_id]);
+        }
+    }
 
 
     
