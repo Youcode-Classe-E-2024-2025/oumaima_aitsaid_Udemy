@@ -50,12 +50,9 @@ class TeacherController {
                 $file_path = $upload_dir . $file_name;
     
                 if (move_uploaded_file($_FILES['resource']['tmp_name'], $file_path)) {
-                    // Add video resource to the database
                     $resource = new VideoRessource($_POST['resource_title'], $file_path);
                     $course_data['resources'][] = $resource;
-    
-                    // Insert the resource into the database
-                    $resource->save($course_id);  // Add this to store the resource in the DB
+                        $resource->save($course_id);  
                 }
             }
     
@@ -67,12 +64,8 @@ class TeacherController {
                 file_put_contents($file_path, $_POST['content_text']);
                 $resource = new DocumentRessource($_POST['resource_title'], $file_path);
                 $course_data['resources'][] = $resource;
-    
-                // Insert the resource into the database
-                $resource->save($course_id);  // Add this to store the resource in the DB
+                $resource->save($course_id); 
             }
-    
-            // Create course and get course_id
             $course_id = $this->course->createCourse($course_data);
     
             if ($course_id) {
@@ -135,12 +128,6 @@ class TeacherController {
         $stmt->execute([$teacher_id, $teacher_id]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
-  
-
-   
-
- 
-   
     public function viewEnrollments($course_id) {
         session_start();
         if (!isset($_SESSION['user_id']) || !$this->user->isTeacher($_SESSION['user_id'])) {
@@ -154,7 +141,6 @@ class TeacherController {
         include __DIR__ . '/../../views/course_enrollments.php';
     }
     
-
     public function viewStatistics() {
         try {
             session_start();
@@ -177,9 +163,25 @@ class TeacherController {
         }
     }
 
-    
 
+    public function displayCourse($id) {
+        session_start();
+        if (!isset($_SESSION['user_id']) || !$this->user->isTeacher($_SESSION['user_id'])) {
+            header("Location: login.php");
+            exit();
+        }
     
+        $course = $this->course->displayCourse($id);
+    
+        if (!$course) {
+            header("Location: index.php?action=dashboard&error=course_not_found");
+            exit();
+        }
+            $resources = $this->course->getCourseResources($id);
+        $course['resources'] = $resources ?: []; 
+    
+        include __DIR__ . '/../../views/display_course.php';
+    }
     
 
 
