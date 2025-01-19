@@ -119,7 +119,22 @@ class TeacherController {
     }
 
    
-    
+    private function getRecentActivities($teacher_id) {
+        $query = "SELECT 'enrollment' as type, i.enrolled_at as date, c.title as course_title, u.username, u.email
+                  FROM inscriptions i
+                  JOIN cours c ON i.course_id = c.id
+                  JOIN utilisateurs u ON i.student_id = u.id
+                  WHERE c.teacher_id = ?
+                  UNION ALL
+                  SELECT 'course_creation' as type, c.created_at as date, c.title as course_title, NULL as username, NULL as email
+                  FROM cours c
+                  WHERE c.teacher_id = ?
+                  ORDER BY date DESC
+                  LIMIT 10";
+        $stmt = $this->db->prepare($query);
+        $stmt->execute([$teacher_id, $teacher_id]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
   
 
    
