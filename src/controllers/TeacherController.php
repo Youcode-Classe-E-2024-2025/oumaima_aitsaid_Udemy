@@ -141,7 +141,18 @@ class TeacherController {
 
  
    
+    public function viewEnrollments($course_id) {
+        session_start();
+        if (!isset($_SESSION['user_id']) || !$this->user->isTeacher($_SESSION['user_id'])) {
+            header("Location: login.php");
+            exit();
+        }
+            $enrollments = $this->course->getCourseEnrollments($course_id);
+        
+        $course = $this->course->getCourseById($course_id);
     
+        include __DIR__ . '/../../views/course_enrollments.php';
+    }
     
 
     
