@@ -22,13 +22,70 @@ class TeacherController {
         
         $teacher_id = $_SESSION['user_id'];
         $courses = $this->course->getCoursesByTeacherId($teacher_id);
+        
+        // Get other necessary data for the dashboard
         $total_students = $this->getTotalStudents($teacher_id);
         $recent_activities = $this->getRecentActivities($teacher_id);
         
         include __DIR__.'/../../views/teacher_dashboard.php';
     }
     
-   
+    public function addCourse() {
+        $categories = $this->categorie->getAll();
+        $tags = $this->Tags->getAll();
+    
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $course_data = [
+                'title' => $_POST['title'],
+                'description' => $_POST['description'],
+                'teacher_id' => $_SESSION['user_id'],
+                'category_id' => $_POST['category_id'],
+                'tags' => isset($_POST['tags']) ? $_POST['tags'] : [],
+                'resources' => [],
+            ];
+    
+            if ($_POST['resource_type'] === 'video' && isset($_FILES['resource']) && $_FILES['resource']['error'] === 0) {
+                $upload_dir = 'uploads/';
+                $file_name = basename($_FILES['resource']['name']);
+                $file_path = $upload_dir . $file_name;
+    
+                if (move_uploaded_file($_FILES['resource']['tmp_name'], $file_path)) {
+                    // Add video resource to the database
+                    $resource = new VideoRessource($_POST['resource_title'], $file_path);
+                    $course_data['resources'][] = $resource;
+    
+                    // Insert the resource into the database
+                    $resource->save($course_id);  // Add this to store the resource in the DB
+                }
+            }
+    
+            if ($_POST['resource_type'] === 'document' && !empty($_POST['content_text'])) {
+                $upload_dir = 'uploads/';
+                $file_name = uniqid() . '.md';
+                $file_path = $upload_dir . $file_name;
+    
+                file_put_contents($file_path, $_POST['content_text']);
+                $resource = new DocumentRessource($_POST['resource_title'], $file_path);
+                $course_data['resources'][] = $resource;
+    
+                // Insert the resource into the database
+                $resource->save($course_id);  // Add this to store the resource in the DB
+            }
+    
+            // Create course and get course_id
+            $course_id = $this->course->createCourse($course_data);
+    
+            if ($course_id) {
+                header("Location: index.php?action=display_course&id=$course_id&success=course_created");
+                exit();
+            } else {
+                $error = "Failed to create course. Please try again.";
+            }
+        }
+    
+        include __DIR__ . '/../../views/add_course.php';
+    }
+
 
   
 
