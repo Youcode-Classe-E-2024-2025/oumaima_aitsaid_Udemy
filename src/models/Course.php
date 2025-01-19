@@ -142,6 +142,19 @@ class Course {
             $stmt->execute([$course_id, $tag_id]);
         }
     }
+    //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<getCourseEnrollments>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+    public function getCourseEnrollments($course_id) {
+        $query = "SELECT i.*, u.username, u.email
+                  FROM inscriptions i
+                  JOIN utilisateurs u ON i.student_id = u.id
+                  WHERE i.course_id = ?";
+        
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(1, $course_id);
+        $stmt->execute();
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 
 
     
