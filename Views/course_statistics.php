@@ -22,7 +22,6 @@
             </div>
         <?php endif; ?>
 
-        <!-- Main Stats -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
             <div class="bg-white shadow-md rounded px-8 pt-6 pb-8">
                 <div class="flex items-center justify-between mb-4">
@@ -55,7 +54,6 @@
             </div>
         </div>
 
-        <!-- Category Distribution -->
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
             <div class="bg-white shadow-md rounded p-6">
                 <h2 class="text-xl font-semibold mb-4">Category Distribution</h2>
@@ -79,7 +77,6 @@
                 <?php endif; ?>
             </div>
 
-            <!-- Most Popular Course -->
             <div class="bg-white shadow-md rounded p-6">
                 <h2 class="text-xl font-semibold mb-4">Most Popular Course</h2>
                 <?php if (isset($statistics['most_popular_course']) && $statistics['most_popular_course']): ?>
@@ -96,7 +93,6 @@
             </div>
         </div>
 
-        <!-- Top Teachers -->
         <div class="bg-white shadow-md rounded p-6">
             <h2 class="text-xl font-semibold mb-4">Top Teachers</h2>
             <?php if (!empty($statistics['top_teachers'])): ?>
@@ -133,7 +129,6 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Animate numbers
             const numbers = document.querySelectorAll('.text-4xl');
             numbers.forEach(number => {
                 number.style.opacity = '0';
@@ -145,7 +140,6 @@
                 }, 100);
             });
 
-            // Animate progress bars
             const bars = document.querySelectorAll('.bg-blue-600');
             bars.forEach(bar => {
                 const width = bar.style.width;
