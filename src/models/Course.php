@@ -280,6 +280,18 @@ class Course {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<displayCourse>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+    public function displayCourse($course_id) {
+        $course = $this->getCourseById($course_id);
+        if (!$course) {
+            return null;
+        }
+
+        $course['tags'] = $this->getCourseTags($course_id);
+        $course['resources'] = $this->getCourseResources($course_id);
+
+        return $course;
+    }
     
         
       
