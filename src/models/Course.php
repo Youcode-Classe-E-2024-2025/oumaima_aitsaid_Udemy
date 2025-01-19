@@ -156,6 +156,119 @@ class Course {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<getCourseStatistics>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+    public function getCourseStatistics($teacher_id = null) {
+        try {
+            $stats = [];
+            
+            $total_query = "SELECT COUNT(*) as total FROM " . $this->table_name;
+            if ($teacher_id) {
+                $total_query .= " WHERE teacher_id = ?";
+            }
+            
+            $stmt = $this->conn->prepare($total_query);
+            if ($teacher_id) {
+                $stmt->execute([$teacher_id]);
+            } else {
+                $stmt->execute();
+            }
+            $stats['total_courses'] = $stmt->fetch(PDO::FETCH_ASSOC)['total'];
+
+            $category_query = "SELECT c.name as category, COUNT(co.id) as count
+                             FROM categories c
+                             LEFT JOIN " . $this->table_name . " co ON c.id = co.category_id";
+            if ($teacher_id) {
+                $category_query .= " WHERE co.teacher_id = ?";
+            }
+            $category_query .= " GROUP BY c.id ORDER BY count DESC";
+            
+            $stmt = $this->conn->prepare($category_query);
+            if ($teacher_id) {
+                $stmt->execute([$teacher_id]);
+            } else {
+                $stmt->execute();
+            }
+            $stats['category_distribution'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            $popular_query = "SELECT c.title, COUNT(i.id) as student_count
+                            FROM " . $this->table_name . " c
+                            LEFT JOIN inscriptions i ON c.id = i.course_id";
+            if ($teacher_id) {
+                $popular_query .= " WHERE c.teacher_id = ?";
+            }
+            $popular_query .= " GROUP BY c.id ORDER BY student_count DESC LIMIT 1";
+            
+            $stmt = $this->conn->prepare($popular_query);
+            if ($teacher_id) {
+                $stmt->execute([$teacher_id]);
+            } else {
+                $stmt->execute();
+            }
+            $stats['most_popular_course'] = $stmt->fetch(PDO::FETCH_ASSOC);
+            $teachers_query = "SELECT u.username, COUNT(DISTINCT c.id) as course_count, 
+                                    COUNT(i.id) as student_count
+                             FROM utilisateurs u
+                             LEFT JOIN " . $this->table_name . " c ON u.id = c.teacher_id
+                             LEFT JOIN inscriptions i ON c.id = i.course_id
+                             WHERE u.role = 'teacher'
+                             GROUP BY u.id
+                             ORDER BY student_count DESC
+                             LIMIT 3";
+            
+            $stmt = $this->conn->prepare($teachers_query);
+            $stmt->execute();
+            $stats['top_teachers'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            // Total students
+            $students_query = "SELECT COUNT(DISTINCT student_id) as total FROM inscriptions";
+            if ($teacher_id) {
+                $students_query = "SELECT COUNT(DISTINCT i.student_id) as total 
+                                 FROM inscriptions i 
+                                 JOIN " . $this->table_name . " c ON i.course_id = c.id 
+                                 WHERE c.teacher_id = ?";
+            }
+            
+            $stmt = $this->conn->prepare($students_query);
+            if ($teacher_id) {
+                $stmt->execute([$teacher_id]);
+            } else {
+                $stmt->execute();
+            }
+            $stats['total_students'] = $stmt->fetch(PDO::FETCH_ASSOC)['total'];
+
+            $avg_query = "SELECT AVG(course_count) as average
+                         FROM (
+                             SELECT student_id, COUNT(DISTINCT course_id) as course_count
+                             FROM inscriptions";
+            if ($teacher_id) {
+                $avg_query .= " JOIN " . $this->table_name . " c ON inscriptions.course_id = c.id 
+                               WHERE c.teacher_id = ?";
+            }
+            $avg_query .= " GROUP BY student_id) as student_courses";
+            
+            $stmt = $this->conn->prepare($avg_query);
+            if ($teacher_id) {
+                $stmt->execute([$teacher_id]);
+            } else {
+                $stmt->execute();
+            }
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            $stats['avg_courses_per_student'] = $result['average'] ?? 0;
+
+            return $stats;
+
+        } catch (PDOException $e) {
+            error_log("Error in getCourseStatistics: " . $e->getMessage());
+            return [
+                'total_courses' => 0,
+                'category_distribution' => [],
+                'most_popular_course' => null,
+                'top_teachers' => [],
+                'total_students' => 0,
+                'avg_courses_per_student' => 0
+            ];
+        }
+    }
 
     
         
