@@ -45,6 +45,16 @@ public function deleteCourse() {
 
 
 
-//new
-
+//-----------------------------------------index--------------------------------------//
+public function indexx() {
+    $coursesPerPage = 10;
+    $currentPage = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+    $currentPage = max($currentPage, 1);
+    $offset = ($currentPage - 1) * $coursesPerPage;
+    $search = isset($_GET['search']) ? trim($_GET['search']) : null;
+    $courses = $this->courseModel->getCourses($coursesPerPage, $offset, $search);
+    $totalCourses = $this->courseModel->countCourses($search);
+    $totalPages = ceil($totalCourses / $coursesPerPage);
+    include('views/student_dashboard.php');
+}
 }
