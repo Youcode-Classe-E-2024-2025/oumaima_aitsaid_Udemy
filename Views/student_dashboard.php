@@ -32,7 +32,7 @@
                     <p class="text-gray-700 mb-4"><?= htmlspecialchars($course['description']) ?></p>
                     <p class="text-sm text-gray-600">Category: <?= htmlspecialchars($course['category'] ?? '') ?></p>
                     <p class="text-sm text-gray-600 mb-4">Instructor: <?= htmlspecialchars($course['teacher_name']) ?></p>
-                    <a href="index.php?action=display_course&id=<?php echo $course['id']; ?>" class="text-gray-800 hover:text-gray-600 transition-colors duration-200">View Course</a>
+                    <a href="index.php?action=displaycoursestudent&id=<?php echo $course['id']; ?>" class="text-gray-800 hover:text-gray-600 transition-colors duration-200">View Course</a>
                 </div>
             <?php endforeach; ?>
         <?php else: ?>

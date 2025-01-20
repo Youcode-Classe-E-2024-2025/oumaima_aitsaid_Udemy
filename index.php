@@ -13,20 +13,30 @@ require_once 'src/controllers/TeacherController.php';
 require_once 'src/models/Ressource.php';
 require_once 'src/models/VideoRessource.php';
 require_once 'src/models/DocumentRessource.php';
-
+require_once 'src/controllers/studentController.php';
+require_once 'src/models/EnrollmentModel.php';
 
 $database = new Database();
 $db = $database->getConnection();
 $controller = new TeacherController($db);
+$controllerStudent = new studentController($db);
 $userController = new UserController($db);
 $courseController = new CourseController($db);
 $adminController = new AdminController($db);
 $categoryController=new categoryController($db);
 $tagsController=new TagsController($db);
+$enrollmentModel = new EnrollmentModel($db);
+$controllerr = new CourseController($db);
 
 $action = isset($_GET['action']) ? $_GET['action'] : 'courses';
 
 switch($action) {
+    case 'enroll':
+        $controllerr->enroll();
+        break;
+    case 'my_courses':
+        $controllerr->myCourses();
+        break;
         case 'register':
             $userController->register();
             break;
@@ -120,9 +130,16 @@ switch($action) {
         case 'display_course':
              $course_id = isset($_GET['id']) ? $_GET['id'] : null;
              if ($course_id) {
-             $courseController->displayCourse($course_id);
+             $controller->displayCourse($course_id);
              } else {
-              header("Location: index.php?action=dashboardd&error=invalid_course");
+              header("Location: index.php?action=dashboard&error=invalid_course");
+             }
+            break;  case 'displaycoursestudent':
+             $course_id = isset($_GET['id']) ? $_GET['id'] : null;
+             if ($course_id) {
+             $controllerStudent->displayCourse($course_id);
+             } else {
+              header("Location: index.php?action=dashboard&error=invalid_course");
              }
             break;
         case 'dashboard':

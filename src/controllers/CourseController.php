@@ -2,6 +2,7 @@
 class CourseController {
     private $courseModel;
     private $categoryModel;
+    private $enrollmentModel; 
     private $tagModel;
     
     public function __construct($db) {
@@ -9,7 +10,42 @@ class CourseController {
         $this->categoryModel = new Category($db);
         $this->tagModel = new Tag($db);
         $this->user = new User($db);
+        $this->enrollmentModel = new EnrollmentModel($db); 
     }
+    
+    public function enroll() {
+        session_start();
+            if (!isset($_SESSION['user_id'])) {
+            header("Location: index.php?action=login"); 
+            exit();
+        }
+            $userId = $_SESSION['user_id'];
+        $courseId = $_GET['course_id'] ?? null;
+    
+        if (!$courseId) {
+            die("Course ID is required.");
+        }
+            if ($this->enrollmentModel->isEnrolled($userId, $courseId)) {
+            header("Location: index.php?action=my_courses&alert=already_enrolled");            exit();
+        }
+            $this->enrollmentModel->enroll($userId, $courseId);
+            header("Location: index.php?action=my_courses");
+        exit();
+    }
+    public function myCourses() {
+        session_start();
+    
+        if (!isset($_SESSION['user_id'])) {
+            header("Location: index.php?action=login");
+            exit();
+        }
+    
+        $userId = $_SESSION['user_id'];
+        $courses=$this->enrollmentModel->getUserCourses($userId);
+        include('views/my_courses.php');
+    }
+    
+    
     //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<listCourses>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>//
 
     public function listCourses() {
