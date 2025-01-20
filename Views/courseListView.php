@@ -26,7 +26,7 @@
                         <p class="text-gray-700 mb-4"><?= htmlspecialchars($course['description']) ?></p>
                         <p class="text-sm text-gray-600">Category: <?= htmlspecialchars($course['category'] ?? '') ?></p>
                         <p class="text-sm text-gray-600 mb-4">Instructor: <?= htmlspecialchars($course['teacher_name']) ?></p>
-                        <button class="btn-secondary">Enroll Now</button>
+                        <button class="btn-secondary" onclick="showRegisterPrompt('<?= htmlspecialchars($course['title']) ?>')">Enroll Now</button>
                     </div>
                 <?php endforeach; ?>
             <?php else: ?>
@@ -54,6 +54,23 @@
 
     <!-- Footer Section -->
   <?php include 'footer.php '?>
+<script>
+  function showRegisterPrompt(courseName) {
+            Swal.fire({
+                title:  ` Access "${courseName}`,
+                text: "You need to register to view the details of this project.",
+                icon: "info",
+                showCancelButton: true,
+                confirmButtonText: "Register",
+                cancelButtonText: "Cancel",
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = 'index.php?action=register';
+                }
+            });
+        }
+    </script>
 </body>
 
 </html>
