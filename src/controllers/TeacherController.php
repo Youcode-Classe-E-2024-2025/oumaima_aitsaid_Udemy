@@ -84,7 +84,22 @@ class TeacherController {
     //<<<<<<<<<<<<<<<<<<<<<<------------------------------------------EditCourse----------------------------------------->>>>>>>>>>>>>>>>>>>>>>>>>>>//
    
     
-   
+    public function deleteResource() {
+        header('Content-Type: application/json');
+        
+        if (!isset($_POST['resource_id'])) {
+            echo json_encode(['success' => false, 'message' => 'Resource ID not provided']);
+            return;
+        }
+    
+        $resource_id = $_POST['resource_id'];
+        $success = $this->course->deleteResource($resource_id);
+        
+        echo json_encode([
+            'success' => $success,
+            'message' => $success ? 'Resource deleted successfully' : 'Failed to delete resource'
+        ]);
+    }
     
     
     
