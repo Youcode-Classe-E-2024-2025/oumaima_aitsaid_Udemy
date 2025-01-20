@@ -48,7 +48,22 @@ class Course {
     }
     
    //new 
- 
+   public function deleteResource($resourceId) {
+    $query = "SELECT * FROM resources_cours WHERE id = ?";
+    $stmt = $this->conn->prepare($query);
+    $stmt->execute([$resourceId]);
+    $resource = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if ($resource) {
+        if (file_exists($resource['file_path'])) {
+            unlink($resource['file_path']);
+        }
+        $query = "DELETE FROM resources_cours WHERE id = ?";
+        $stmt = $this->conn->prepare($query);
+        return $stmt->execute([$resourceId]);
+    }
+    return false;
+}
     //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<deleteCourse>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>//
 
     public function deleteCourse($id) {
