@@ -35,9 +35,8 @@ class Course {
     }
 
 
-  
-    
-
+   
+ 
     //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<deleteCourse>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>//
 
     public function deleteCourse($id) {
@@ -320,7 +319,19 @@ class Course {
 
 
     
-  
+    public function updateCourseTags($courseId, $tags) {
+        $query = "DELETE FROM cours_tags WHERE course_id = ?";
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute([$courseId]);
+    
+        if (!empty($tags)) {
+            $query = "INSERT INTO cours_tags (course_id, tag_id) VALUES (?, ?)";
+            $stmt = $this->conn->prepare($query);
+            foreach ($tags as $tagId) {
+                $stmt->execute([$courseId, $tagId]);
+            }
+        }
+    }
     //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<getCourseById>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
     public function getCourseById($course_id) {
         $query = "SELECT c.*, cat.name as category_name, u.username as teacher_name 
