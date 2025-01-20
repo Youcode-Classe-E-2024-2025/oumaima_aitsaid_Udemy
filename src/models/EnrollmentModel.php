@@ -13,6 +13,9 @@ class EnrollmentModel {
         return $query->rowCount() > 0;
     }
     
-   
+    public function enroll($userId, $courseId) {
+        $query = $this->db->prepare("INSERT INTO inscriptions (student_id, course_id) VALUES (?, ?)");
+        $query->execute([$userId, $courseId]);
+    }
    
 }
