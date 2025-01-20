@@ -24,7 +24,7 @@ $adminController = new AdminController($db);
 $categoryController=new categoryController($db);
 $tagsController=new TagsController($db);
 
-$action = isset($_GET['action']) ? $_GET['action'] : '';
+$action = isset($_GET['action']) ? $_GET['action'] : 'courses';
 
 switch($action) {
         case 'register':
@@ -74,14 +74,14 @@ switch($action) {
              }
              break;
         case 'delete_category':
-                 if (isset($_GET['id'])) 
-                 {
+             if (isset($_GET['id'])) 
+             {
             $categoryController->deleteCategory((int)$_GET['id']);
-                 } 
-                 else 
-                 {
-                     echo "Error: u need category ID.";
-                 } 
+             } 
+             else 
+             {
+                 echo "Error: u need category ID.";
+             } 
             break;
         case 'Tags':
             $tagsController->index();
@@ -94,57 +94,68 @@ switch($action) {
         case 'delete_tag':
             $tagsController->deleteTag($_GET['id']);
             break;
-            case 'add_course':
-                $controller->addCourse();
-                break;
-                case 'view_enrollments':
-                    $course_id = isset($_GET['id']) ? (int)$_GET['id'] : null; // Ensure it's cast to integer
-                    if ($course_id) {
-                        $controller->viewEnrollments($course_id);
-                    } else {
-                        header("Location: index.php?action=dashboard&error=invalid_course");
-                    }
-                    break;
+        case 'add_course':
+            $controller->addCourse();
+            break;
+        case 'view_enrollments':
+            $course_id = isset($_GET['id']) ? (int)$_GET['id'] : null; 
+            if ($course_id) {
+                $controller->viewEnrollments($course_id);
+            } else {
+                header("Location: index.php?action=dashboard&error=invalid_course");
+            }
+            break;
                                
-            case 'view_statistics':
-                $controller->viewStatistics();
+        case 'view_statistics':
+            $controller->viewStatistics();
+            break;
+        case 'update_course':
+            $course_id = isset($_GET['id']) ? $_GET['id'] : null;
+            if ($course_id) {
+                $controller->updateCourse($course_id);
+            } else {
+                header("Location: index.php?action=dashboard&error=invalid_course");
+            }
+            break;
+        case 'display_course':
+             $course_id = isset($_GET['id']) ? $_GET['id'] : null;
+             if ($course_id) {
+             $controller->displayCourse($course_id);
+             } else {
+              header("Location: index.php?action=dashboard&error=invalid_course");
+             }
+            break;
+        case 'dashboard':
+            $controller->dashboard();
+            break;
+        case 'delete_course':
+            $course_id = isset($_GET['id']) ? (int)$_GET['id'] : null;
+            
+            if ($course_id) {
+                $controller->deleteCourse($course_id);
+            } else {
+                header("Location: index.php?action=dashboard&error=invalid_course");
+                exit();
+            }
+            break;
+
+            case 'dashboardd': // Student dashboard case
+                $courseController->indexx();
                 break;
-                case 'update_course':
-                    $course_id = isset($_GET['id']) ? $_GET['id'] : null;
-                    if ($course_id) {
-                        $controller->updateCourse($course_id);
-                    } else {
-                        header("Location: index.php?action=dashboard&error=invalid_course");
-                    }
-                    break;
-                case 'display_course':
-                    $course_id = isset($_GET['id']) ? $_GET['id'] : null;
-                    if ($course_id) {
-                        $controller->displayCourse($course_id);
-                    } else {
-                        header("Location: index.php?action=dashboard&error=invalid_course");
-                    }
-                    break;
-                    case 'dashboard':
-                        $controller->dashboard();
-                        break;
-                        case 'delete_course':
-                            $course_id = isset($_GET['id']) ? (int)$_GET['id'] : null;
-                        
-                            if ($course_id) {
-                                $controller->deleteCourse($course_id);
-                            } else {
-                                header("Location: index.php?action=dashboard&error=invalid_course");
-                                exit();
-                            }
-                            break;
         case 'logout' :
             session_start();
             session_destroy();
             session_unset();
             header("Location:index.php?action=login"); 
             break;
- default:
+
+
+
+
+
+
+
+default:
         echo "Welcome to my platforme !";
         break;
 }

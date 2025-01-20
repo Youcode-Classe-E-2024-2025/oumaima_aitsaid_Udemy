@@ -21,8 +21,9 @@ class CourseController {
     $currentPage = isset($_GET['page']) ? (int)$_GET['page'] : 1;
     $currentPage = max($currentPage, 1);
     $offset = ($currentPage - 1) * $coursesPerPage;
-    $courses = $this->courseModel->getCourses($coursesPerPage, $offset);
-    $totalCourses = $this->courseModel->countCourses();
+    $search = isset($_GET['search']) ? trim($_GET['search']) : null;
+    $courses = $this->courseModel->getCourses($coursesPerPage, $offset, $search);
+    $totalCourses = $this->courseModel->countCourses($search);
     $totalPages = ceil($totalCourses / $coursesPerPage);
     include('views/courseListView.php');
 
@@ -41,4 +42,9 @@ public function deleteCourse() {
         exit();
     }
 }   
+
+
+
+//new
+
 }

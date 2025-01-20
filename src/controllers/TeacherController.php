@@ -31,6 +31,7 @@ class TeacherController {
     }
     
     public function addCourse() {
+        session_start();
         $categories = $this->categorie->getAll();
         $tags = $this->Tags->getAll();
     
@@ -52,7 +53,6 @@ class TeacherController {
                 if (move_uploaded_file($_FILES['resource']['tmp_name'], $file_path)) {
                     $resource = new VideoRessource($_POST['resource_title'], $file_path);
                     $course_data['resources'][] = $resource;
-                        $resource->save($course_id);  
                 }
             }
     
@@ -64,11 +64,13 @@ class TeacherController {
                 file_put_contents($file_path, $_POST['content_text']);
                 $resource = new DocumentRessource($_POST['resource_title'], $file_path);
                 $course_data['resources'][] = $resource;
-                $resource->save($course_id); 
             }
             $course_id = $this->course->createCourse($course_data);
     
             if ($course_id) {
+                foreach ($course_data['resources'] as $resource) {
+                    $resource->save($this->db, $course_id);  // Pass the $db and $course_id
+                }
                 header("Location: index.php?action=display_course&id=$course_id&success=course_created");
                 exit();
             } else {

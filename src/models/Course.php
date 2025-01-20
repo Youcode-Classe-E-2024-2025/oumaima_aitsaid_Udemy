@@ -35,7 +35,7 @@ class Course {
     }
     //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<deleteCourse>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>//
 
-    public function delete($id) {
+    public function deleteCourse($id) {
         $query = "DELETE FROM " . $this->table . " WHERE id = :id";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':id', $id);
@@ -97,28 +97,48 @@ class Course {
     }
     //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<getAllCourses avec pagination>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>//
 
-    public function getCourses($limit, $offset) {
+    public function getCourses($limit, $offset, $search = null) {
         $query = "SELECT c.id, c.title, c.description, c.created_at, u.username AS teacher_name, cat.name AS category
                   FROM cours c
                   LEFT JOIN utilisateurs u ON c.teacher_id = u.id
-                  LEFT JOIN categories cat ON c.category_id = cat.id
-                  ORDER BY c.created_at DESC
-                  LIMIT :limit OFFSET :offset";
+                  LEFT JOIN categories cat ON c.category_id = cat.id";
+            if ($search) {
+            $query .= " WHERE c.title LIKE :search OR c.description LIKE :search";
+        }
+            $query .= " ORDER BY c.created_at DESC LIMIT :limit OFFSET :offset";
+    
         $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
+            if ($search) {
+            $searchTerm = '%' . $search . '%';
+            $stmt->bindParam(':search', $searchTerm, PDO::PARAM_STR);
+        }
+            $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
         $stmt->bindParam(':offset', $offset, PDO::PARAM_INT);
+    
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
     //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<Nombres de courses>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>//
 
-    public function countCourses() {
+    public function countCourses($search = null) {
         $query = "SELECT COUNT(*) as total FROM " . $this->table;
+        if ($search) {
+            $query .= " WHERE title LIKE :search OR description LIKE :search";
+        }
         $stmt = $this->conn->prepare($query);
+    
+        if ($search) {
+            $searchTerm = '%' . $search . '%';
+            $stmt->bindParam(':search', $searchTerm, PDO::PARAM_STR);
+        }
         $stmt->execute();
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
+    
         return $result['total'];
     }
+    
+    
+    
     
     //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<getCourseByTeacherId>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
     public function getCoursesByTeacherId($teacher_id) {
@@ -161,7 +181,7 @@ class Course {
         try {
             $stats = [];
             
-            $total_query = "SELECT COUNT(*) as total FROM " . $this->table_name;
+            $total_query = "SELECT COUNT(*) as total FROM " . $this->table;
             if ($teacher_id) {
                 $total_query .= " WHERE teacher_id = ?";
             }
@@ -176,7 +196,7 @@ class Course {
 
             $category_query = "SELECT c.name as category, COUNT(co.id) as count
                              FROM categories c
-                             LEFT JOIN " . $this->table_name . " co ON c.id = co.category_id";
+                             LEFT JOIN " . $this->table . " co ON c.id = co.category_id";
             if ($teacher_id) {
                 $category_query .= " WHERE co.teacher_id = ?";
             }
@@ -191,7 +211,7 @@ class Course {
             $stats['category_distribution'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
             $popular_query = "SELECT c.title, COUNT(i.id) as student_count
-                            FROM " . $this->table_name . " c
+                            FROM " . $this->table . " c
                             LEFT JOIN inscriptions i ON c.id = i.course_id";
             if ($teacher_id) {
                 $popular_query .= " WHERE c.teacher_id = ?";
@@ -208,7 +228,7 @@ class Course {
             $teachers_query = "SELECT u.username, COUNT(DISTINCT c.id) as course_count, 
                                     COUNT(i.id) as student_count
                              FROM utilisateurs u
-                             LEFT JOIN " . $this->table_name . " c ON u.id = c.teacher_id
+                             LEFT JOIN " . $this->table . " c ON u.id = c.teacher_id
                              LEFT JOIN inscriptions i ON c.id = i.course_id
                              WHERE u.role = 'teacher'
                              GROUP BY u.id
@@ -224,7 +244,7 @@ class Course {
             if ($teacher_id) {
                 $students_query = "SELECT COUNT(DISTINCT i.student_id) as total 
                                  FROM inscriptions i 
-                                 JOIN " . $this->table_name . " c ON i.course_id = c.id 
+                                 JOIN " . $this->table . " c ON i.course_id = c.id 
                                  WHERE c.teacher_id = ?";
             }
             
@@ -241,7 +261,7 @@ class Course {
                              SELECT student_id, COUNT(DISTINCT course_id) as course_count
                              FROM inscriptions";
             if ($teacher_id) {
-                $avg_query .= " JOIN " . $this->table_name . " c ON inscriptions.course_id = c.id 
+                $avg_query .= " JOIN " . $this->table . " c ON inscriptions.course_id = c.id 
                                WHERE c.teacher_id = ?";
             }
             $avg_query .= " GROUP BY student_id) as student_courses";
