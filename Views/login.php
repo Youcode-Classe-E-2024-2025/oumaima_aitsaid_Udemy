@@ -3,6 +3,13 @@
 <main class="bg-gray-900 text-gray-100 py-16 px-4 sm:px-6 lg:px-8">
     <div class="max-w-md mx-auto bg-white p-8 rounded-lg shadow-lg">
         <h1 class="text-3xl font-bold text-center text-purple-600 mb-6">Login to Your Account</h1>
+        <!-- Add error message display here -->
+        <?php if (isset($_SESSION['error'])): ?>
+            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
+                <span class="block sm:inline"><?php echo $_SESSION['error']; ?></span>
+                <?php unset($_SESSION['error']); ?>
+            </div>
+        <?php endif; ?>
         
         <form action="/youdemy/index.php?action=login" method="POST" class="space-y-6">
             <div class="mb-4">

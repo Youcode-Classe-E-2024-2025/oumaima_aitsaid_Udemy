@@ -46,39 +46,96 @@ class UserController {
     //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<login>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>//
 
     public function login() {
+        $message = '';
+        
         if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $email = filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL);
             $password = $_POST['password'];
-
+    
             if (!$email || !$password) {
-                return "Email and password are obligatoire.";
-            }
-
-            $this->user->setEmail($email);
-            if ($this->user->login() && password_verify($password, $this->user->getPassword())) {
-                session_start();
-                $_SESSION['user_id'] = $this->user->getId();
-                $_SESSION['username'] = $this->user->getUsername();
-                $_SESSION['role'] = $this->user->getRole();
-
-                switch ($this->user->getRole()) {
-                    case 'admin':
-                        header("Location: index.php?action=admin_dashboard");
-                        break;
-                    case 'teacher':
-                        header("Location: index.php?action=dashboard");
-                        break;
-                    default:
-                    header("Location: index.php?action=dashboardd");
-                        break;
-                }
-                exit();
+                $message = "required";
             } else {
-                return " Please try again.";
+                $this->user->setEmail($email);
+                
+                if ($this->user->login() && password_verify($password, $this->user->getPassword())) {
+                    $isValidated = $this->user->getIsValidate();
+                    $isActive = $this->user->getIsActive();
+                    $role = $this->user->getRole();
+    
+                    if ($isActive == 0) {
+                        $message = "suspended";
+                    } elseif ($role === 'teacher' && $isValidated == 0) {
+                        $message = "pending";
+                    } else {
+                        session_start();
+                        $_SESSION['user_id'] = $this->user->getId();
+                        $_SESSION['username'] = $this->user->getUsername();
+                        $_SESSION['role'] = $role;
+    
+                        switch ($role) {
+                            case 'admin':
+                                header("Location: index.php?action=admin_dashboard");
+                                break;
+                            case 'teacher':
+                                header("Location: index.php?action=dashboard");
+                                break;
+                            default:
+                                header("Location: index.php?action=dashboardd");
+                                break;
+                        }
+                        exit();
+                    }
+                } else {
+                    $message = "invalid";
+                }
             }
         }
         
         include 'views/login.php';
+        
+        if ($message) {
+            $this->displayAlert($message);
+        }
     }
+    
+    private function displayAlert($type) {
+        $alerts = [
+            'required' => [
+                'icon' => 'warning',
+                'title' => 'Required Fields',
+                'text' => 'Email and password are required.'
+            ],
+            'suspended' => [
+                'icon' => 'error',
+                'title' => 'Account Suspended',
+                'text' => 'Your account is suspended. Please contact the administrator.'
+            ],
+            'pending' => [
+                'icon' => 'info',
+                'title' => 'Pending Validation',
+                'text' => 'Please wait for admin validation of your teacher account.'
+            ],
+            'invalid' => [
+                'icon' => 'error',
+                'title' => 'Login Failed',
+                'text' => 'Invalid credentials. Please try again.'
+            ]
+        ];
+    
+        if (isset($alerts[$type])) {
+            $alert = $alerts[$type];
+            echo "<script>
+                Swal.fire({
+                    icon: '{$alert['icon']}',
+                    title: '{$alert['title']}',
+                    text: '{$alert['text']}'
+                });
+            </script>";
+        }
+    }
+    
+    
+    
+    
 }
 

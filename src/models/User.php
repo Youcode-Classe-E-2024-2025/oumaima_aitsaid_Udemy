@@ -7,6 +7,8 @@ class User {
     protected $email;
     protected $password;
     protected $role;
+    protected $is_active;
+    protected $validated;
         //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<Construct>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>//
         public function __construct($db) {
         $this->conn = $db;
@@ -32,6 +34,13 @@ class User {
     }
     public function getConnection() {
         return $this->conn;
+    }
+    public function getIsActive(){
+        return $this->is_active;
+    }
+    public function getIsValidate(){
+        var_dump($this->validated);
+        return $this->validated;
     }
         //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<setters>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>//
         public function setId($id) {
@@ -70,21 +79,26 @@ class User {
     }
         //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<login>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>//
         public function login() {
-        $query = "SELECT id, username, password, role FROM " . $this->table_name . " WHERE email = ? LIMIT 0,1";
-        $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(1, $this->email);
-        $stmt->execute();
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        if($row) {
-            $this->id = $row['id'];
-            $this->username = $row['username'];
-            $this->password = $row['password'];
-            $this->role = $row['role'];
-            return true;
+            $query = "SELECT id, username, password, role,is_active, validated FROM " . $this->table_name . " WHERE email = ? LIMIT 0,1";
+            
+            $stmt = $this->conn->prepare($query);
+            $stmt->bindParam(1, $this->email);
+            $stmt->execute();
+            
+            $row = $stmt->fetch(PDO::FETCH_ASSOC);
+            
+            if($row) {
+                $this->id = $row['id'];
+                $this->username = $row['username'];
+                $this->password = $row['password'];
+                $this->role = $row['role'];
+                $this->validated = $row['validated'];
+                $this->is_active = $row['is_active'];
+                return true;
+            }
+            return false;
         }
-        return false;
-    }
+        
         //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<getAllUsers>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>//
 
     public function getAll(){
