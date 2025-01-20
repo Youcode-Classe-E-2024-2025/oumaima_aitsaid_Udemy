@@ -35,7 +35,19 @@ class Course {
     }
 
 
-   
+    //////////////////
+    public function updateCourse($data) {
+        $query = "UPDATE cours SET title = ?, description = ?, category_id = ? WHERE id = ?";
+        $stmt = $this->conn->prepare($query);
+        return $stmt->execute([
+            $data['title'],
+            $data['description'],
+            $data['category_id'],
+            $data['course_id']
+        ]);
+    }
+    
+   //new 
  
     //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<deleteCourse>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>//
 
