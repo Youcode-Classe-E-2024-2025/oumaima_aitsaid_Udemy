@@ -8,6 +8,7 @@ class CourseController {
         $this->courseModel = new Course($db);
         $this->categoryModel = new Category($db);
         $this->tagModel = new Tag($db);
+        $this->user = new User($db);
     }
     //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<listCourses>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>//
 
@@ -57,4 +58,8 @@ public function indexx() {
     $totalPages = ceil($totalCourses / $coursesPerPage);
     include('views/student_dashboard.php');
 }
+
+
+//----------------------displayCourses----------------------------------------------//
+
 }

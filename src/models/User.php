@@ -106,5 +106,13 @@ class User {
     public function isTeacher($id) {
         $user = $this->getUserById($id);
         return $user && $user['role'] === 'teacher';
+    } 
+    public function isStudent($id) {
+        $user = $this->getUserById($id);
+        return $user && $user['role'] === 'student';
+    }
+    public function isAdmin($id) {
+        $user = $this->getUserById($id);
+        return $user && $user['role'] === 'admin';
     }
 }

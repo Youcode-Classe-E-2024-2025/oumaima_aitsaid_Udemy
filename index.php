@@ -120,9 +120,9 @@ switch($action) {
         case 'display_course':
              $course_id = isset($_GET['id']) ? $_GET['id'] : null;
              if ($course_id) {
-             $controller->displayCourse($course_id);
+             $courseController->displayCourse($course_id);
              } else {
-              header("Location: index.php?action=dashboard&error=invalid_course");
+              header("Location: index.php?action=dashboardd&error=invalid_course");
              }
             break;
         case 'dashboard':
@@ -139,7 +139,7 @@ switch($action) {
             }
             break;
 
-            case 'dashboardd': // Student dashboard case
+            case 'dashboardd': 
                 $courseController->indexx();
                 break;
         case 'logout' :
