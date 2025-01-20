@@ -260,7 +260,27 @@ class TeacherController {
     }
 
 
+    public function displayCourse($id) {
+        session_start();
+        if (!isset($_SESSION['user_id']) || !$this->user->isTeacher($_SESSION['user_id'])) {
+            header("Location: login.php");
+            exit();
+        }
+
+        $course = $this->course->displayCourse($id);
     
+        if (!$course) {
+            header("Location: index.php?action=dashboard&error=course_not_found");
+            exit();
+        }
+          $resources = $this->course->getCourseResources($id);
+        $course['resources'] = $resources ?: [];
+            $tags = $this->course->getCourseTags($id);
+        $course['tags'] = $tags ?: [];
+            $category = $this->categorie->getCategoryById($course['category_id']);
+        $course['category_name'] = $category ? $category['name'] : 'no categorie';    
+        include __DIR__ . '/../../views/display_course.php';
+    }
     
 
 
