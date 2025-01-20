@@ -81,7 +81,21 @@ class TeacherController {
         include __DIR__ . '/../../views/add_course.php';
     }
 
+    //<<<<<<<<<<<<<<<<<<<<<<------------------------------------------EditCourse----------------------------------------->>>>>>>>>>>>>>>>>>>>>>>>>>>//
+   
+    
+   
+    
+    
+    
+    public function getCourseById($id) {
+        $query = "SELECT * FROM cours WHERE id = ?";
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute([$id]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
 
+//<<<<<<<<<<<<<<<<<<<<<<<<<----------------------------------------------------------------deletecourse------------------------------>>>>>>>>>>>>>>>//
     public function deleteCourse($id) {
         session_start();
         if(!isset($_SESSION['user_id']) || !$this->user->isTeacher($_SESSION['user_id'])) {
@@ -166,24 +180,7 @@ class TeacherController {
     }
 
 
-    public function displayCourse($id) {
-        session_start();
-        if (!isset($_SESSION['user_id']) || !$this->user->isTeacher($_SESSION['user_id'])) {
-            header("Location: login.php");
-            exit();
-        }
     
-        $course = $this->course->displayCourse($id);
-    
-        if (!$course) {
-            header("Location: index.php?action=dashboard&error=course_not_found");
-            exit();
-        }
-            $resources = $this->course->getCourseResources($id);
-        $course['resources'] = $resources ?: []; 
-    
-        include __DIR__ . '/../../views/display_course.php';
-    }
     
 
 

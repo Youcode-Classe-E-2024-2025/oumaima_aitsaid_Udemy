@@ -155,7 +155,12 @@ switch($action) {
                 exit();
             }
             break;
-
+            case 'delete_resource':
+                $teacherController->deleteResource();
+                break;
+            case 'edit_course':
+                $controller->editCourse();
+                break;
             case 'dashboardd': 
                 $courseController->indexx();
                 break;

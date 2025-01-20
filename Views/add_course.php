@@ -8,6 +8,10 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/simplemde@1.11.2/dist/simplemde.min.css">
     <script src="https://cdn.jsdelivr.net/npm/simplemde@1.11.2/dist/simplemde.min.js"></script>
+    <!-- Add these in the head section -->
+<script src="https://cdn.jsdelivr.net/npm/@yaireo/tagify"></script>
+<link href="https://cdn.jsdelivr.net/npm/@yaireo/tagify/dist/tagify.css" rel="stylesheet">
+
 </head>
 <body class="bg-gray-100">
 <div class="container mx-auto px-4 py-8">
@@ -60,19 +64,9 @@
             </div>
 
             <div class="mb-6">
-                <label class="block text-sm font-medium text-gray-700 mb-1">Tags (Max 3)</label>
-                <div class="flex flex-wrap gap-2 mb-2" id="selectedTags"></div>
-                <div class="flex flex-wrap gap-2" id="tagOptions">
-                    <?php foreach ($tags as $tag): ?>
-                        <div class="tag-option">
-                            <label>
-                                <input type="checkbox" name="tags[]" value="<?= $tag['id'] ?>">
-                                <?= $tag['name'] ?>
-                            </label>
-                        </div>
-                    <?php endforeach; ?>
-                </div>
-            </div>
+    <label class="block text-sm font-medium text-gray-700 mb-1">Tags (Max 3)</label>
+    <input name='tags' class='tagify-input' value='<?php echo json_encode($currentTags); ?>'>
+</div>
 
             <div class="mb-4">
                 <label class="block text-sm font-medium text-gray-700 mb-1">Resource Type</label>
@@ -106,42 +100,55 @@
                     <label class="block text-sm font-medium text-gray-700 mb-1">Markdown Content</label>
                     <textarea id="markdown-editor" name="content_text" placeholder="Write your markdown content here" rows="6" class="hidden"></textarea>
                 </div>
+                <div class="mb-4">
+                    <button type="submit"
+                        class="w-full bg-purple-600 text-white py-2 px-4 rounded-lg hover:bg-purple-700 transition duration-300 flex items-center justify-center gap-2">
+                        <i class="fas fa-save"></i>
+                        Create Course
+                    </button>
             </div>
-            <div class="mb-4">
-                <button type="submit"
-                    class="w-full bg-purple-600 text-white py-2 px-4 rounded-lg hover:bg-purple-700 transition duration-300 flex items-center justify-center gap-2">
-                    <i class="fas fa-save"></i>
-                    Create Course
-                </button>
             </div>
         </form>
 
     </div>
 
     <script>
-        function toggleResourceFields() {
+       
+const input = document.querySelector('input[name=tags]');
+const tagify = new Tagify(input, {
+    maxTags: 3,
+    whitelist: <?php echo json_encode(array_map(function($tag) {
+        return ['id' => $tag['id'], 'value' => $tag['name']];
+    }, $tags)); ?>,
+    enforceWhitelist: true,
+    dropdown: {
+        maxItems: 20,
+        classname: "tags-look",
+        enabled: 0,
+        closeOnSelect: false
+    }
+});
+
+function toggleResourceFields() {
     const resourceType = document.getElementById('resource_type').value;
     const videoFields = document.getElementById('videoFields');
     const documentFields = document.getElementById('documentFields');
-    console.log("Selected resource type:", resourceType);
+
+    videoFields.classList.add('hidden');
+    documentFields.classList.add('hidden');
 
     if (resourceType === 'video') {
         videoFields.classList.remove('hidden');
-        documentFields.classList.add('hidden');
     } else if (resourceType === 'document') {
         documentFields.classList.remove('hidden');
-        videoFields.classList.add('hidden');
     }
 }
 
-        var simplemde = new SimpleMDE({
-            element: document.getElementById("markdown-editor"), 
-            spellChecker: false, 
-            autosave: { enabled: true, uniqueId: "markdown-editor" } 
-        });
-        document.addEventListener('DOMContentLoaded', function () {
-            simplemde.codemirror.setValue(""); 
-        });
+// Initialize SimpleMDE
+var simplemde = new SimpleMDE({
+    element: document.getElementById("markdown-editor"),
+    spellChecker: false
+});
     </script>
 </body>
 </html>

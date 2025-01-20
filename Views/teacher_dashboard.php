@@ -185,6 +185,7 @@
                         <a href="index.php?action=display_course&id=<?php echo $course['id']; ?>" class="text-gray-800 hover:text-gray-600 transition-colors duration-200">View Course</a>
                         <a href="index.php?action=view_enrollments&id=<?php echo $course['id']; ?>" class="text-gray-800 hover:text-gray-600 transition-colors duration-200">View Enrollment</a>
                         <a href="index.php?action=delete_course&id=<?php echo $course['id']; ?>" class="text-red-600 hover:text-red-500 transition-colors duration-200" onclick="return confirm('Are you sure you want to delete this course?');">Delete</a>
+                        <a href="index.php?action=edit_course&id=<?php echo $course['id']; ?>" class="text-blue-600 hover:text-blue-500 transition-colors duration-200">Edit</a>
                     </div>
                 </div>
             </div>

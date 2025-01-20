@@ -33,6 +33,11 @@ class Course {
 
         return $course_id;
     }
+
+
+  
+    
+
     //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<deleteCourse>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>//
 
     public function deleteCourse($id) {
@@ -312,6 +317,10 @@ class Course {
 
         return $course;
     }
+
+
+    
+  
     //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<getCourseById>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
     public function getCourseById($course_id) {
         $query = "SELECT c.*, cat.name as category_name, u.username as teacher_name 

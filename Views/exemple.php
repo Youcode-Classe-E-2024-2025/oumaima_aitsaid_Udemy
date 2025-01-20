@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo htmlspecialchars($course['title']); ?> - YouDemy</title>
-    <script src="https://cdn.tailwindcss.com"></script>    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body class="bg-gray-100">
@@ -28,22 +28,23 @@
             </div>
 
             <div class="mb-4">
-                <h2 class="text-xl font-bold mb-2">Tags</h2>
-                <div class="flex flex-wrap">
-                    <?php foreach ($course['tags'] as $tag): ?>
-                        <span class="bg-blue-100 text-blue-800 text-sm font-medium mr-2 px-2.5 py-0.5 rounded">
-                            <?php echo htmlspecialchars($tag['name']); ?></span>
-                    <?php endforeach; ?>
-                </div>
-            </div>
-
-            <div class="mb-4">
+    <h2 class="text-xl font-bold mb-2">Tags</h2>
+    <div class="flex flex-wrap">
+        <?php foreach ($course['tags'] as $tag): ?>
+            <span class="bg-blue-100 text-blue-800 text-sm font-medium mr-2 px-2.5 py-0.5 rounded">
+                <?php echo htmlspecialchars($tag['name']); ?>
+            </span>
+        <?php endforeach; ?>
+    </div>
+</div>
+<div class="mb-4">
     <h2 class="text-xl font-bold mb-2">Resources</h2>
     <?php 
     $displayedResources = [];
     if (!empty($course['resources'])): ?>
         <ul class="space-y-4">
             <?php foreach ($course['resources'] as $resource): 
+                // Skip if already displayed
                 if (in_array($resource['id'], $displayedResources)) continue;
                 $displayedResources[] = $resource['id'];
             ?>
@@ -73,8 +74,8 @@
         <p class="text-gray-700">No resources available for this course.</p>
     <?php endif; ?>
 </div>
+
         </div>
     </div>
 </body>
 </html>
-
