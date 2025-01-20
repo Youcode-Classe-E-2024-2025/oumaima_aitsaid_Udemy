@@ -82,7 +82,72 @@ class TeacherController {
     }
 
     //<<<<<<<<<<<<<<<<<<<<<<------------------------------------------EditCourse----------------------------------------->>>>>>>>>>>>>>>>>>>>>>>>>>>//
-   
+    public function editCourse() {
+        session_start();
+        
+        if (!isset($_GET['id'])) {
+            header('Location: index.php?action=dashboard');
+            exit();
+        }
+    
+        $course_id = $_GET['id'];
+        $course = $this->course->getCourseById($course_id);
+        
+        if (!$course || $course['teacher_id'] != $_SESSION['user_id']) {
+            header('Location: index.php?action=dashboard');
+            exit();
+        }
+    
+        $categories = $this->categorie->getAll();
+        $tags = $this->Tags->getAll();
+        $currentTags = $this->course->getCourseTags($course_id);
+        $resources = $this->course->getCourseResources($course_id);
+    
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $course_data = [
+                'course_id' => $_POST['course_id'],
+                'title' => $_POST['title'],
+                'description' => $_POST['description'],
+                'category_id' => $_POST['category_id']
+            ];
+    
+            if ($this->course->updateCourse($course_data)) {
+                if (isset($_POST['tags'])) {
+                    $this->course->updateCourseTags($course_id, $_POST['tags']);
+                }
+    
+                if (!empty($_POST['resource_type'])) {
+                    if ($_POST['resource_type'] === 'video' && isset($_FILES['resource']) && $_FILES['resource']['error'] === 0) {
+                        $upload_dir = 'uploads/';
+                        $file_name = basename($_FILES['resource']['name']);
+                        $file_path = $upload_dir . $file_name;
+    
+                        if (move_uploaded_file($_FILES['resource']['tmp_name'], $file_path)) {
+                            $resource = new VideoRessource($_POST['resource_title'], $file_path);
+                            $resource->save($this->db, $course_id);
+                        }
+                    }
+    
+                    if ($_POST['resource_type'] === 'document' && !empty($_POST['content_text'])) {
+                        $upload_dir = 'uploads/';
+                        $file_name = uniqid() . '.md';
+                        $file_path = $upload_dir . $file_name;
+    
+                        file_put_contents($file_path, $_POST['content_text']);
+                        $resource = new DocumentRessource($_POST['resource_title'], $file_path);
+                        $resource->save($this->db, $course_id);
+                    }
+                }
+    
+                header("Location: index.php?action=display_course&id={$course_id}&success=course_updated");
+                exit();
+            } else {
+                $error = "Failed to update course. Please try again.";
+            }
+        }
+    
+        include __DIR__ . '/../../views/edit_courses.php';
+    }
     
     public function deleteResource() {
         header('Content-Type: application/json');
