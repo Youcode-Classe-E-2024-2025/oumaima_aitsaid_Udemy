@@ -12,6 +12,14 @@ class CourseController {
         $this->user = new User($db);
         $this->enrollmentModel = new EnrollmentModel($db); 
     }
+    private function checkStudentAuth(){
+        session_start();
+        
+        if (!isset($_SESSION['user_id']) || !$this->user->isStudent($_SESSION['user_id'])) {
+            header("Location: index.php?action=login");
+            exit();
+        }
+    }
     
     public function enroll() {
         session_start();
@@ -84,6 +92,7 @@ public function deleteCourse() {
 
 //-----------------------------------------index--------------------------------------//
 public function indexx() {
+    $this->checkStudentAuth();
     $coursesPerPage = 10;
     $currentPage = isset($_GET['page']) ? (int)$_GET['page'] : 1;
     $currentPage = max($currentPage, 1);

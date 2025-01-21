@@ -12,18 +12,20 @@ class TeacherController {
         $this->categorie =new Category($db);
         $this->Tags =new Tag($db);
     }
-
-    public function dashboard() {
+    private function checkTeacherAuth() {
         session_start();
-        if(!isset($_SESSION['user_id']) || !$this->user->isTeacher($_SESSION['user_id'])) {
-            header("Location: login.php");
+        if (!isset($_SESSION['user_id']) || !$this->user->isTeacher($_SESSION['user_id'])) {
+            header("Location: index.php?action=login");
             exit();
         }
+    }
+    
+    public function dashboard() {
+        $this->checkTeacherAuth();
         
         $teacher_id = $_SESSION['user_id'];
         $courses = $this->course->getCoursesByTeacherId($teacher_id);
         
-        // Get other necessary data for the dashboard
         $total_students = $this->getTotalStudents($teacher_id);
         $recent_activities = $this->getRecentActivities($teacher_id);
         
@@ -31,7 +33,7 @@ class TeacherController {
     }
     
     public function addCourse() {
-        session_start();
+        $this->checkTeacherAuth();
         $categories = $this->categorie->getAll();
         $tags = $this->Tags->getAll();
     
@@ -45,45 +47,61 @@ class TeacherController {
                 'resources' => [],
             ];
     
-            if ($_POST['resource_type'] === 'video' && isset($_FILES['resource']) && $_FILES['resource']['error'] === 0) {
-                $upload_dir = 'uploads/';
-                $file_name = basename($_FILES['resource']['name']);
-                $file_path = $upload_dir . $file_name;
-    
-                if (move_uploaded_file($_FILES['resource']['tmp_name'], $file_path)) {
-                    $resource = new VideoRessource($_POST['resource_title'], $file_path);
-                    $course_data['resources'][] = $resource;
-                }
-            }
-    
-            if ($_POST['resource_type'] === 'document' && !empty($_POST['content_text'])) {
-                $upload_dir = 'uploads/';
-                $file_name = uniqid() . '.md';
-                $file_path = $upload_dir . $file_name;
-    
-                file_put_contents($file_path, $_POST['content_text']);
-                $resource = new DocumentRessource($_POST['resource_title'], $file_path);
+            if ($_POST['resource_type'] === 'video') {
+                $resource = new VideoRessource(
+                    $_POST['video_title'],  
+                    $this->handleFileUpload($_FILES['video_resource']) 
+                );
                 $course_data['resources'][] = $resource;
             }
+    
+            if ($_POST['resource_type'] === 'document') {
+                $resource = new DocumentRessource(
+                    $_POST['document_title'],  
+                    $this->saveMarkdownContent($_POST['content_text'])
+                );
+                $course_data['resources'][] = $resource;
+            }
+    
             $course_id = $this->course->createCourse($course_data);
     
             if ($course_id) {
                 foreach ($course_data['resources'] as $resource) {
-                    $resource->save($this->db, $course_id);  // Pass the $db and $course_id
+                    $resource->save($this->db, $course_id);
                 }
                 header("Location: index.php?action=display_course&id=$course_id&success=course_created");
                 exit();
-            } else {
-                $error = "Failed to create course. Please try again.";
             }
         }
     
         include __DIR__ . '/../../views/add_course.php';
     }
+    
+    private function handleFileUpload($file) {
+        if ($file['error'] === 0) {
+            $upload_dir = 'uploads/';
+            $file_name = uniqid() . '_' . basename($file['name']);
+            $file_path = $upload_dir . $file_name;
+            
+            move_uploaded_file($file['tmp_name'], $file_path);
+            return $file_path;
+        }
+        return null;
+    }
+    
+    private function saveMarkdownContent($content) {
+        $upload_dir = 'uploads/';
+        $file_name = uniqid() . '.md';
+        $file_path = $upload_dir . $file_name;
+        
+        file_put_contents($file_path, $content);
+        return $file_path;
+    }
+    
 
     //<<<<<<<<<<<<<<<<<<<<<<------------------------------------------EditCourse----------------------------------------->>>>>>>>>>>>>>>>>>>>>>>>>>>//
     public function editCourse() {
-        session_start();
+        $this->checkTeacherAuth();
         
         if (!isset($_GET['id'])) {
             header('Location: index.php?action=dashboard');
@@ -93,11 +111,6 @@ class TeacherController {
         $course_id = $_GET['id'];
         $course = $this->course->getCourseById($course_id);
         
-        if (!$course || $course['teacher_id'] != $_SESSION['user_id']) {
-            header('Location: index.php?action=dashboard');
-            exit();
-        }
-    
         $categories = $this->categorie->getAll();
         $tags = $this->Tags->getAll();
         $currentTags = $this->course->getCourseTags($course_id);
@@ -177,11 +190,7 @@ class TeacherController {
 
 //<<<<<<<<<<<<<<<<<<<<<<<<<----------------------------------------------------------------deletecourse------------------------------>>>>>>>>>>>>>>>//
     public function deleteCourse($id) {
-        session_start();
-        if(!isset($_SESSION['user_id']) || !$this->user->isTeacher($_SESSION['user_id'])) {
-            header("Location: login.php");
-            exit();
-        }
+        $this->checkTeacherAuth();
 
         $teacher_id = $_SESSION['user_id'];
 
@@ -261,12 +270,7 @@ class TeacherController {
 
 
     public function displayCourse($id) {
-        session_start();
-        if (!isset($_SESSION['user_id']) || !$this->user->isTeacher($_SESSION['user_id'])) {
-            header("Location: login.php");
-            exit();
-        }
-
+        $this->checkTeacherAuth();
         $course = $this->course->displayCourse($id);
     
         if (!$course) {

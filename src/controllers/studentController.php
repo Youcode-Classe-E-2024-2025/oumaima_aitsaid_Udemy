@@ -14,13 +14,16 @@ class studentController{
     }
 
 
-
-public function displayCourse($id) {
+private function checkStudentAuth(){
     session_start();
+    
     if (!isset($_SESSION['user_id']) || !$this->user->isStudent($_SESSION['user_id'])) {
-        header("Location: login.php");
+        header("Location: index.php?action=login");
         exit();
     }
+}
+public function displayCourse($id) {
+    $this->checkStudentAuth();
 
     $course = $this->course->displayCourse($id);
 

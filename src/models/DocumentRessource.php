@@ -3,7 +3,7 @@ class DocumentRessource extends Ressource {
     public function __construct($title, $file_path) {
         parent::__construct($title, $file_path);
     }
-    public function save($db, $course_id) {
+    public function save($db,$course_id) {
         $query = "INSERT INTO ressources_cours (course_id, type, title, file_path) VALUES (?, 'document', ?, ?)";
         $stmt = $db->prepare($query);
     

@@ -9,6 +9,7 @@ require_once 'src/controllers/categoryController.php';
 require_once 'src/controllers/TagController.php';
 require_once 'src/models/Category.php';
 require_once 'src/models/Tag.php';
+require_once 'src/models/Admin.php';
 require_once 'src/controllers/TeacherController.php';
 require_once 'src/models/Ressource.php';
 require_once 'src/models/VideoRessource.php';

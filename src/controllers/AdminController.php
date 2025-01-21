@@ -1,18 +1,27 @@
 <?php
-require_once __DIR__ . '/../../config/Database.php';
-require_once __DIR__ . '/../models/Admin.php';
+
 
 class AdminController {
     private $admin;
+    private $user;  
 
     public function __construct($db) {
         $db = (new Database())->getConnection();
         $this->admin = new Admin($db);
+        $this->user = new User($db); 
     }
     //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<dashboard>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>//
 
-    public function dashboard() {
+    private function checkAdminAuth(){
         session_start();
+        if(!isset($_SESSION['user_id']) || $this->user->isAdmin($_SESSION['user_id']))
+        {
+            header("Location: index.php?action=login");
+            exit();
+        }
+    }
+    public function dashboard() {
+        $this->checkAdminAuth();
 
         $stats = $this->admin->getStatistics();
         include __DIR__ . '/../../Views/admin_dashboard.php';
@@ -20,6 +29,7 @@ class AdminController {
     //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<validateTeacher>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>//
 
     public function validateTeacher() {
+        $this->checkAdminAuth();
         if ($_SERVER["REQUEST_METHOD"] === "POST") {
             $teacher_id = filter_input(INPUT_POST, 'teacher_id', FILTER_SANITIZE_NUMBER_INT);
             if ($teacher_id && $this->admin->validateTeacher($teacher_id)) {
@@ -34,6 +44,7 @@ class AdminController {
     //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<manageUser>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>//
 
     public function manageUsers() {
+        $this->checkAdminAuth();
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $action = $_POST['action'];
             $user_id = $_POST['user_id'];
@@ -67,6 +78,7 @@ class AdminController {
      //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<updateUserStatus>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>//
 
     public function updateUserStatus() {
+        $this->checkAdminAuth();
         if ($_SERVER["REQUEST_METHOD"] === "POST") {
             $user_id = filter_input(INPUT_POST, 'user_id', FILTER_SANITIZE_NUMBER_INT);
             $status = filter_input(INPUT_POST, 'status', FILTER_SANITIZE_STRING);
