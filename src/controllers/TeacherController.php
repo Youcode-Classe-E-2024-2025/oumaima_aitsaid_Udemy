@@ -38,37 +38,37 @@ class TeacherController {
         $tags = $this->Tags->getAll();
     
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $resource = null;
             $course_data = [
                 'title' => $_POST['title'],
                 'description' => $_POST['description'],
                 'teacher_id' => $_SESSION['user_id'],
                 'category_id' => $_POST['category_id'],
-                'tags' => isset($_POST['tags']) ? $_POST['tags'] : [],
-                'resources' => [],
+                'tags' => isset($_POST['tags']) ? $_POST['tags'] : []
             ];
-    
+            $course_id = $this->course->createCourse($course_data);
+            if($course_id){
             if ($_POST['resource_type'] === 'video') {
                 $resource = new VideoRessource(
                     $_POST['video_title'],  
                     $this->handleFileUpload($_FILES['video_resource']) 
                 );
-                $course_data['resources'][] = $resource;
+                
             }
     
-            if ($_POST['resource_type'] === 'document') {
+           else if ($_POST['resource_type'] === 'document') {
                 $resource = new DocumentRessource(
                     $_POST['document_title'],  
                     $this->saveMarkdownContent($_POST['content_text'])
                 );
-                $course_data['resources'][] = $resource;
+               
             }
     
-            $course_id = $this->course->createCourse($course_data);
+            if ($resource) {
+                $resource->save($this->db, $course_id);
+            }
     
-            if ($course_id) {
-                foreach ($course_data['resources'] as $resource) {
-                    $resource->save($this->db, $course_id);
-                }
+          
                 header("Location: index.php?action=display_course&id=$course_id&success=course_created");
                 exit();
             }

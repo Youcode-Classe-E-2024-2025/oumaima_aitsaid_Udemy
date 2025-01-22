@@ -28,14 +28,21 @@
             </div>
 
             <div class="mb-4">
-                <h2 class="text-xl font-bold mb-2">Tags</h2>
-                <div class="flex flex-wrap">
-                    <?php foreach ($course['tags'] as $tag): ?>
-                        <span class="bg-blue-100 text-blue-800 text-sm font-medium mr-2 px-2.5 py-0.5 rounded">
-                            <?php echo htmlspecialchars($tag['name']); ?></span>
-                    <?php endforeach; ?>
-                </div>
-            </div>
+    <h2 class="text-xl font-bold mb-2">Tags</h2>
+    <div class="flex flex-wrap gap-2">
+        <?php 
+        if (!empty($course['tags'])): ?>
+            <?php foreach ($course['tags'] as $tag): ?>
+                <span class="bg-blue-100 text-blue-800 text-sm font-medium px-3 py-1 rounded-full">
+                    <i class="fas fa-tag mr-1"></i>
+                    <?php echo htmlspecialchars($tag['name']); ?>
+                </span>
+            <?php endforeach; ?>
+        <?php else: ?>
+            <p class="text-gray-500 italic">No tags for this course</p>
+        <?php endif; ?>
+    </div>
+</div>
 
             <div class="mb-4">
     <h2 class="text-xl font-bold mb-2">Resources</h2>

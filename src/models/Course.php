@@ -189,7 +189,9 @@ class Course {
     private function addCourseTags($course_id, $tags) {
         $query = "INSERT INTO cours_tags (course_id, tag_id) VALUES (?, ?)";
         $stmt = $this->conn->prepare($query);
-        foreach ($tags as $tag_id) {
+        $tagsArray = is_string($tags) ? json_decode($tags, true) : $tags;
+        foreach ($tagsArray as $tagData) {
+            $tag_id = isset($tagData['id']) ? $tagData['id'] : $tagData['value'];
             $stmt->execute([$course_id, $tag_id]);
         }
     }
@@ -343,9 +345,6 @@ class Course {
 
         return $course;
     }
-
-
-    
     public function updateCourseTags($courseId, $tags) {
         $query = "DELETE FROM cours_tags WHERE course_id = ?";
         $stmt = $this->conn->prepare($query);

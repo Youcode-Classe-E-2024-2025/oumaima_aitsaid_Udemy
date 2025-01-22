@@ -66,7 +66,6 @@ class User {
         public function create() {
         $query = "INSERT INTO " . $this->table_name . " SET username=:username, email=:email, password=:password, role=:role";
         $stmt = $this->conn->prepare($query);
-
         $stmt->bindParam(":username", $this->username);
         $stmt->bindParam(":email", $this->email);
         $stmt->bindParam(":password", $this->password);
@@ -80,7 +79,6 @@ class User {
         //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<login>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>//
         public function login() {
             $query = "SELECT id, username, password, role,is_active, validated FROM " . $this->table_name . " WHERE email = ? LIMIT 0,1";
-            
             $stmt = $this->conn->prepare($query);
             $stmt->bindParam(1, $this->email);
             $stmt->execute();

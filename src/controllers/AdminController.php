@@ -14,7 +14,7 @@ class AdminController {
 
     private function checkAdminAuth(){
         session_start();
-        if(!isset($_SESSION['user_id']) || $this->user->isAdmin($_SESSION['user_id']))
+        if(!isset($_SESSION['user_id']) || !$this->user->isAdmin($_SESSION['user_id']))
         {
             header("Location: index.php?action=login");
             exit();

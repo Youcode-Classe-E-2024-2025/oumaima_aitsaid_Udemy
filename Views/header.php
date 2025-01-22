@@ -72,9 +72,14 @@
                     <span class="font-bold text-2xl text-white gradient-text">Youdemy</span>
                 </div>
                 <div class="flex items-center space-x-8">
-                    <a href="index.php?action=courses" class="text-white hover:text-yellow-400">Courses</a>
+                    <?php if(isset($_SESSION['user_id'])): ?>
+                        <a href="index.php?action=my_courses" class="text-white hover:text-yellow-400">My Courses</a>
+                        <a href="index.php?action=logout" class="text-white hover:text-yellow-400">Logout</a>
+                        <?php else: ?>
+                            <a href="index.php?action=courses" class="text-white hover:text-yellow-400">Courses</a>
                     <a href="index.php?action=login" class="text-white hover:text-yellow-400">Sign In</a>
                     <a href="index.php?action=register"  class="text-white hover:text-yellow-400">Sign Up</a>
+                    <?php endif; ?>
                 </div>
             </div>
         </div>
